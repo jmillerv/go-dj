@@ -1,17 +1,18 @@
 package content
 
 type Announcement struct {
-	File []byte
+	Content []byte
+	Path    string
 }
 
-func (a Announcement) Get() {
+func (a *Announcement) Get() {
 	panic("implement me")
 }
 
-func (a Announcement) Play() {
+func (a *Announcement) Play() {
 	panic("implement me")
 }
 
-func (a Announcement) Stop() {
+func (a *Announcement) Stop() {
 	panic("implement me")
 }

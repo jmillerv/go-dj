@@ -1,19 +1,19 @@
 package content
 
 type Podcast struct {
-	Name string
-	URL  string
-	File []byte
+	URL     string
+	Path    string
+	Content []byte
 }
 
-func (p Podcast) Get() {
+func (p *Podcast) Get() {
 	panic("implement me")
 }
 
-func (p Podcast) Play() {
+func (p *Podcast) Play() {
 	panic("implement me")
 }
 
-func (p Podcast) Stop() {
+func (p *Podcast) Stop() {
 	panic("implement me")
 }
