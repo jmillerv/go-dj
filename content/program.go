@@ -3,13 +3,13 @@ package content
 type Program struct {
 	Name     string
 	Source   string
-	Timeslot Slot
+	Timeslot Timeslot
 	Type     MediaType
 }
 
-func (p *Program) Get() *Media {
+func (p *Program) GetMedia() Media {
 	media := p.mediaFactory()
-	return &media
+	return media
 }
 
 func (p *Program) mediaFactory() Media {

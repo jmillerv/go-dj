@@ -1,5 +1,11 @@
 package content
 
+import (
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+	"time"
+)
+
 const (
 	Early      Timeslot = "early"
 	Morning    Timeslot = "morning"
@@ -33,19 +39,44 @@ var TimeslotMap = map[Timeslot]*Slot{
 	All:        {"12:00 AM", "12:00 PM"},
 }
 
-type Schedule struct {
-	Early      bool
-	Morning    bool
-	Breakfast  bool
-	Midmorning bool
-	Afternoon  bool
-	Commute    bool
-	Evening    bool
-	Late       bool
-	Overnight  bool
-}
-
 type Scheduler struct {
 	Programs []*Program
-	Schedule Schedule
+}
+
+func (s *Scheduler) Run() error {
+	now := time.Now()
+	ts := getTimeSlot(&now)
+	for _, p := range s.Programs {
+		if ts == p.Timeslot {
+			content := p.GetMedia()
+			content.Play() // make this block until done
+		}
+	}
+	// if time between TimeSlotMap
+	// play program from that slot.
+	// wait for program to finish
+	// get next
+	return nil
+}
+
+func getTimeSlot(t *time.Time) Timeslot {
+	// if t between certain times return Timeslot
+	return All
+}
+
+func NewScheduler(file string) *Scheduler {
+	log.Info("Loading Config File from: ", file)
+	viper.SetConfigType("yaml")
+	viper.SetConfigFile(file)
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.WithField("file", file).WithError(err).Error("Failed to unmarshal config file")
+		return nil
+	}
+	s := new(Scheduler)
+
+	if err := viper.Unmarshal(s); err != nil {
+		return nil
+	}
+	return s
 }
