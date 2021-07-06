@@ -1,12 +1,23 @@
 package content
 
+const (
+	podcastContent      MediaType = "podcast"
+	announcementContent MediaType = "announcement"
+	webRadioContent     MediaType = "web_radio"
+	fileContet          MediaType = "file"
+)
+
+type MediaType string
+
+var MediaTypeMap = map[MediaType]Media{
+	podcastContent:      new(Podcast),
+	announcementContent: new(Announcement),
+	webRadioContent:     new(WebRadio),
+	fileContet:          new(LocalFile),
+}
+
 type Media interface {
 	Get()
 	Play()
 	Stop()
-}
-
-// Media factory takes in a an array of sources and returns the media objects.
-func MediaFactory() []*Media {
-	return nil
 }

@@ -1,6 +1,7 @@
 package content
 
 type Podcast struct {
+	Name    string
 	URL     string
 	Path    string
 	Content []byte

@@ -1,7 +1,10 @@
 package content
 
+// Not yet implemented
+
 type WebRadio struct {
-	URL string
+	Name string
+	URL  string
 }
 
 func (w *WebRadio) Get() {

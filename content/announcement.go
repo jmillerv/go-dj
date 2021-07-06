@@ -1,6 +1,9 @@
 package content
 
+// Not yet implemented
+
 type Announcement struct {
+	Name    string
 	Content []byte
 	Path    string
 }
