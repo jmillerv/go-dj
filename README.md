@@ -12,7 +12,7 @@ which has dependencies that may need to be installed depending on the system you
 - [ ] Announcements
 - [ ] Podcast Support
 - [ ] Web Radio Station Support
-- [ ] Local File Support
+- [x] Local File Support
 - [ ] Randomized Programming
 - [ ] Scheduled Programming
 - [ ] Local Folder support
@@ -48,10 +48,15 @@ Evening: 7 PM - 11 PM
 Late: 11 PM - 2 AM
 Overnight: 2 AM - 5 AM
 
-## Local Files
+## Files
+
+### Local Files
 go-dj searches for files from the root of where the binary is stored. The LocalFile struct doesn't have a URL attached
 but does have a path. When adding a LocalFile type to the programs be sure to use `Path` instead of `Source`. This should
 be cleaned up so that source can stand in for URL/Path/etc but I haven't abstracted that yet.
+
+### Supported File Types
+At the moment go-dj only supports mp3 files.
 
 ## Types
 
