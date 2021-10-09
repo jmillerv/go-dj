@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	configFile = "./config.yml"
+	configFile = "config.dev.yml"
 )
 
 func main() {
