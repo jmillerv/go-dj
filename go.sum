@@ -171,6 +171,14 @@ github.com/hashicorp/memberlist v0.1.3/go.mod h1:ajVTdAv/9Im8oMAAj5G31PhhMCZJV2p
 github.com/hashicorp/serf v0.8.2/go.mod h1:6hOLApaqBFA1NXqRQAsxw9QxuDEvNxSQRwA/JwenrHc=
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
 github.com/ianlancetaylor/demangle v0.0.0-20200824232613-28f6c0f3b639/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
+github.com/jmillerv/go-utilities v0.0.0-20211009174004-60cfe5981551 h1:m0S2JdhzVhMgRx0FSK8dKuFzBSRUb9Uxc2iL9CRQh28=
+github.com/jmillerv/go-utilities v0.0.0-20211009174004-60cfe5981551/go.mod h1:okN4LUTlx7FrTlYcVKXZs059xgpOldGWZupW2MeJXuE=
+github.com/jmillerv/go-utilities v0.0.0-20211009174740-aa49d095ff44 h1:Pdoembp4cvrNTGqhfjXfX/VZhJP3NmRiBho1LOjne1Y=
+github.com/jmillerv/go-utilities v0.0.0-20211009174740-aa49d095ff44/go.mod h1:okN4LUTlx7FrTlYcVKXZs059xgpOldGWZupW2MeJXuE=
+github.com/jmillerv/go-utilities v0.0.0-20211009175208-86d3c4984dc0 h1:iZqAg1lTjiK7zoYDdAwqOKzLBll6m7n8HlZvbjHbz5M=
+github.com/jmillerv/go-utilities v0.0.0-20211009175208-86d3c4984dc0/go.mod h1:okN4LUTlx7FrTlYcVKXZs059xgpOldGWZupW2MeJXuE=
+github.com/jmillerv/go-utilities v0.0.0-20211009175413-077cd5304cea h1:FJhMTpZMEcqorl+oKIbhgOFCwoSpkS+2y6KeUz/PIb0=
+github.com/jmillerv/go-utilities v0.0.0-20211009175413-077cd5304cea/go.mod h1:okN4LUTlx7FrTlYcVKXZs059xgpOldGWZupW2MeJXuE=
 github.com/json-iterator/go v1.1.10 h1:Kz6Cvnvv2wGdaG/V8yMvfkmNiXq9Ya2KUv4rouJJr68=
 github.com/json-iterator/go v1.1.10/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
 github.com/json-iterator/go v1.1.11/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
