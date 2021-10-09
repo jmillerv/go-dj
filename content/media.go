@@ -4,7 +4,7 @@ const (
 	podcastContent      MediaType = "podcast"
 	announcementContent MediaType = "announcement"
 	webRadioContent     MediaType = "web_radio"
-	fileContet          MediaType = "file"
+	fileContent         MediaType = "file"
 )
 
 type MediaType string
@@ -13,7 +13,7 @@ var MediaTypeMap = map[MediaType]Media{
 	podcastContent:      new(Podcast),
 	announcementContent: new(Announcement),
 	webRadioContent:     new(WebRadio),
-	fileContet:          new(LocalFile),
+	fileContent:         new(LocalFile),
 }
 
 type Media interface {
