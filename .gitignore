@@ -16,3 +16,5 @@
 # vendor/
 
 config.yml
+static
+go-dj
