@@ -1,5 +1,10 @@
 package content
 
+import (
+	"github.com/jmillerv/go-utilities/formatter"
+	log "github.com/sirupsen/logrus"
+)
+
 type Program struct {
 	Name     string
 	Source   string
@@ -18,12 +23,13 @@ func (p *Program) mediaFactory() Media {
 	case *Announcement:
 		panic("implement me")
 	case *LocalFile:
-		panic("implement me")
+		file := m.(*LocalFile)
+		file.Name = p.Name
+		file.Path = p.Source
+		log.Debugf("returning LocalFile: %v", formatter.StructToString(file))
+		return file
 	case *Podcast:
-		pod := m.(*Podcast)
-		pod.Name = p.Name
-		pod.URL = p.Source
-		return pod
+		panic("implement me")
 	case *WebRadio:
 		panic("implement me")
 	}

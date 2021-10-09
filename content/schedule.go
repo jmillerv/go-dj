@@ -1,6 +1,7 @@
 package content
 
 import (
+	"github.com/jmillerv/go-utilities/formatter"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"time"
@@ -40,16 +41,23 @@ var TimeslotMap = map[Timeslot]*Slot{
 }
 
 type Scheduler struct {
-	Programs []*Program
+	Content struct {
+		Programs []*Program
+	}
 }
 
 func (s *Scheduler) Run() error {
+	log.Info("Starting Daemon")
 	now := time.Now()
 	ts := getTimeSlot(&now)
-	for _, p := range s.Programs {
-		if ts == p.Timeslot {
+	for _, p := range s.Content.Programs {
+		log.Debugf("program %v", formatter.StructToIndentedString(p))
+		if ts == p.Timeslot || ts == All {
+			log.Infof("getting media type: %v", p.Type)
 			content := p.GetMedia()
-			content.Play() // make this block until done
+			log.Debugf("media struct: %v", content)
+			content.Get()
+			content.Play() // play will block until done
 		}
 	}
 	// if time between TimeSlotMap
@@ -68,7 +76,6 @@ func NewScheduler(file string) *Scheduler {
 	log.Info("Loading Config File from: ", file)
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile(file)
-
 	if err := viper.ReadInConfig(); err != nil {
 		log.WithField("file", file).WithError(err).Error("Failed to unmarshal config file")
 		return nil
@@ -76,7 +83,9 @@ func NewScheduler(file string) *Scheduler {
 	s := new(Scheduler)
 
 	if err := viper.Unmarshal(s); err != nil {
+		log.WithError(err).Error("unable to unmarshall config into struct")
 		return nil
 	}
+	log.Info("config loaded", formatter.StructToIndentedString(s))
 	return s
 }
