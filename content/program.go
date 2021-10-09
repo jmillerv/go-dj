@@ -1,5 +1,10 @@
 package content
 
+import (
+	"github.com/jmillerv/go-utilities/formatter"
+	log "github.com/sirupsen/logrus"
+)
+
 type Program struct {
 	Name     string
 	Source   string
@@ -21,6 +26,7 @@ func (p *Program) mediaFactory() Media {
 		file := m.(*LocalFile)
 		file.Name = p.Name
 		file.Path = p.Source
+		log.Debugf("returning LocalFile: %v", formatter.StructToString(file))
 		return file
 	case *Podcast:
 		panic("implement me")
