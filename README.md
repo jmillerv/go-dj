@@ -38,15 +38,15 @@ content:
 
 
 ## Timeslots
-Early: 5 AM - 7 AM  
-Morning: 7 MA - 8 AM  
-Breakfast: 8 AM - 11 AM  
-Midmorning: 11 AM - 2 PM  
-Afternoon: 2PM - 5 PM  
-Commute: 5PM - 7 PM  
-Evening: 7 PM - 11 PM  
-Late: 11 PM - 2 AM  
-Overnight: 2 AM - 5 AM  
+early: 5 AM - 7 AM  
+morning: 7 MA - 8 AM  
+breakfast: 8 AM - 11 AM  
+midmorning: 11 AM - 2 PM  
+afternoon: 2PM - 5 PM  
+commute: 5PM - 7 PM  
+evening: 7 PM - 11 PM  
+late: 11 PM - 2 AM  
+overnight: 2 AM - 5 AM  
 
 ## Files
 
