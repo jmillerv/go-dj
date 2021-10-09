@@ -51,9 +51,13 @@ func (s *Scheduler) Run() error {
 	now := time.Now()
 	ts := getTimeSlot(&now)
 	for _, p := range s.Content.Programs {
-		if ts == p.Timeslot {
+		log.Debugf("program %v", formatter.StructToIndentedString(p))
+		if ts == p.Timeslot || ts == All {
+			log.Infof("getting media type: %v", p.Type)
 			content := p.GetMedia()
-			content.Play() // make this block until done
+			log.Debugf("media struct: %v", content)
+			content.Get()
+			content.Play() // play will block until done
 		}
 	}
 	// if time between TimeSlotMap
