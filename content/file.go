@@ -1,19 +1,48 @@
 package content
 
+import (
+	"github.com/faiface/beep"
+	"github.com/faiface/beep/mp3"
+	"github.com/faiface/beep/speaker"
+	log "github.com/sirupsen/logrus"
+	"os"
+	"time"
+)
+
 // Not yet implemented
 
 type LocalFile struct {
 	Name    string
-	Content []byte
+	Content *os.File
 	Path    string
 }
 
 func (l *LocalFile) Get() {
-	panic("implement me")
+	log.Infof("buffering file from %s", l.Path)
+	f, err := os.Open(l.Path)
+	if err != nil {
+		log.WithError(err).Error("unable to open file from path")
+	}
+	l.Content = f
 }
 
 func (l *LocalFile) Play() {
-	panic("implement me")
+	log.Infof("decoding file from %v", l.Path)
+	streamer, format, err := mp3.Decode(l.Content)
+	if err != nil {
+		log.WithError(err).Fatal("unable to decode mp3")
+	}
+	defer streamer.Close()
+	log.Infof("playing file buffer from %v", l.Path)
+	err = speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
+	if err != nil {
+		log.WithError(err).Fatal("unable to play file")
+	}
+	done := make(chan bool)
+	speaker.Play(beep.Seq(streamer, beep.Callback(func() {
+		done <- true
+	})))
+	<-done
 }
 
 func (l *LocalFile) Stop() {
