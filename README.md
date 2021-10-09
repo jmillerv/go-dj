@@ -4,6 +4,10 @@ daemon for automating audio programming
 ## Usage
 The use case I built this for was automating content for an AM radio station I run around my house.
 
+## Dependencies
+Under the hood, this uses [beep](https://github.com/faiface/beep) to play the files. That package relies on [Oto](https://github.com/hajimehoshi/oto)
+which has dependencies that may need to be installed depending on the system you're running go-dj off of.
+
 ## Roadmap
 - [ ] Announcements
 - [ ] Podcast Support
