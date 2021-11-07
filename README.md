@@ -15,8 +15,10 @@ which has dependencies that may need to be installed depending on the system you
 - [x] Local File Support
 - [ ] Randomized Programming
 - [ ] Scheduled Programming
-- [ ] Local Folder support
+- [x] Local Folder support
 - [ ] Remote file support
+- [ ] Skip signal
+- [ ] Stop signal
 
 ## Config Setup
 
