@@ -22,6 +22,12 @@ func (p *Program) mediaFactory() Media {
 	switch m.(type) {
 	case *Announcement:
 		panic("implement me")
+	case *Folder:
+		folder := m.(*Folder)
+		folder.Name = p.Name
+		folder.Path = p.Source
+		log.Debugf("returning Folder: %v", formatter.StructToString(folder))
+		return folder
 	case *LocalFile:
 		file := m.(*LocalFile)
 		file.Name = p.Name
