@@ -27,6 +27,7 @@ Folders are also supported and make the same directory assumptions as local file
 - [ ] Remote file support
 - [ ] Skip signal
 - [ ] Stop signal
+- [ ] Logging Options
 
 ## Config Setup
 
