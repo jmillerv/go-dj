@@ -8,6 +8,14 @@ The use case I built this for was automating content for an AM radio station I r
 Under the hood, this uses [beep](https://github.com/faiface/beep) to play the files. That package relies on [Oto](https://github.com/hajimehoshi/oto)
 which has dependencies that may need to be installed depending on the system you're running go-dj off of.
 
+## Supported Content
+
+### Local Files
+Local files are support and the config assumes that they are located in the same directory as the deamon.
+
+### Local Folder
+Folders are also supported and make the same directory assumptions as local files.
+
 ## Roadmap
 - [ ] Announcements
 - [ ] Podcast Support
