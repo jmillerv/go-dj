@@ -9,8 +9,6 @@ import (
 	"time"
 )
 
-// Not yet implemented
-
 type LocalFile struct {
 	Name    string
 	Content *os.File
