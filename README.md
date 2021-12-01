@@ -8,6 +8,9 @@ The use case I built this for was automating content for an AM radio station I r
 Under the hood, this uses [beep](https://github.com/faiface/beep) to play the files. That package relies on [Oto](https://github.com/hajimehoshi/oto)
 which has dependencies that may need to be installed depending on the system you're running go-dj off of.
 
+### Incompatibility Warning
+MPEG 2.5 is not supported because of underlying dependencies.
+
 ## Supported Content
 
 ### Local Files
@@ -26,8 +29,10 @@ Folders are also supported and make the same directory assumptions as local file
 - [x] Local Folder support
 - [ ] Remote file support
 - [ ] Skip signal
+- [ ] Play previous signal
 - [ ] Stop signal
 - [ ] Logging Options
+- [ ] Recently played content cache
 
 ## Config Setup
 
