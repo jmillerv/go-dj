@@ -7,9 +7,11 @@ The use case I built this for was automating content for an AM radio station I r
 ## Dependencies
 Under the hood, this uses [beep](https://github.com/faiface/beep) to play the files. That package relies on [Oto](https://github.com/hajimehoshi/oto)
 which has dependencies that may need to be installed depending on the system you're running go-dj off of.
+[MPV](mpv.io) is used to support web radio streams. There are plans to remove this by making a package for dealing with web streams.
 
 ### Incompatibility Warning
-MPEG 2.5 is not supported because of underlying dependencies.
+MPEG 2.5 is not supported because of underlying go-mp3 dependency.
+
 
 ## Supported Content
 
@@ -20,16 +22,13 @@ Local files are support and the config assumes that they are located in the same
 Folders are also supported and make the same directory assumptions as local files.
 
 ## Roadmap
-- [ ] Announcements
 - [ ] Podcast Support
-- [ ] Web Radio Station Support
+- [x] Web Radio Station Support
 - [x] Local File Support
 - [ ] Randomized Programming
 - [ ] Scheduled Programming
 - [x] Local Folder support
 - [ ] Remote file support
-- [ ] Skip signal
-- [ ] Play previous signal
 - [ ] Stop signal
 - [ ] Logging Options
 - [ ] Recently played content cache
