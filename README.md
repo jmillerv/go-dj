@@ -31,8 +31,6 @@ Folders are also supported and make the same directory assumptions as local file
 - [x] Local Folder support
 - [ ] Remote file support
 - [ ] Stop signal
-- [ ] Logging Options
-- [ ] Recently played content cache
 
 ## Config Setup
 
