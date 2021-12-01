@@ -24,6 +24,7 @@ Folders are also supported and make the same directory assumptions as local file
 ## Roadmap
 - [ ] Podcast Support
 - [x] Web Radio Station Support
+- [ ] End web radio signal
 - [x] Local File Support
 - [ ] Randomized Programming
 - [ ] Scheduled Programming
