@@ -37,7 +37,11 @@ func (p *Program) mediaFactory() Media {
 	case *Podcast:
 		panic("implement me")
 	case *WebRadio:
-		panic("implement me")
+		radio := m.(*WebRadio)
+		radio.Name = p.Name
+		radio.URL = p.Source
+		log.Debugf("returning WebRadio: %v", formatter.StructToString(radio))
+		return radio
 	}
 	return nil
 }

@@ -9,6 +9,7 @@ require (
 	github.com/faiface/beep v1.1.0 // indirect
 	github.com/google/martian v2.1.0+incompatible
 	github.com/gopherjs/gopherwasm v1.0.0 // indirect
+	github.com/gordonklaus/portaudio v0.0.0-20200911161147-bb74aa485641 // indirect
 	github.com/jmillerv/go-utilities v0.0.0-20211009175413-077cd5304cea
 	github.com/mmcdole/gofeed v1.1.3 // indirect
 	github.com/sirupsen/logrus v1.8.1
