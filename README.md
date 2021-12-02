@@ -21,6 +21,9 @@ Local files are support and the config assumes that they are located in the same
 ### Local Folder
 Folders are also supported and make the same directory assumptions as local files.
 
+### Web Radio 
+A web radio station can be supplied via URL in the config
+
 ## Roadmap
 - [ ] Podcast Support
 - [x] Web Radio Station Support
@@ -31,6 +34,7 @@ Folders are also supported and make the same directory assumptions as local file
 - [x] Local Folder support
 - [ ] Remote file support
 - [ ] Stop signal
+- [ ] WAV Support
 
 ## Config Setup
 
@@ -70,7 +74,7 @@ but does have a path. When adding a LocalFile type to the programs be sure to us
 be cleaned up so that source can stand in for URL/Path/etc but I haven't abstracted that yet.
 
 ### Supported File Types
-At the moment go-dj only supports mp3 files.
+At the moment go-dj only supports mp3 files for local and remote files.
 
 ## Types
 
