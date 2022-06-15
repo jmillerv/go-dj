@@ -25,16 +25,18 @@ Folders are also supported and make the same directory assumptions as local file
 A web radio station can be supplied via URL in the config
 
 ## Roadmap
+### Feature Complete
 - [ ] Podcast Support
 - [x] Web Radio Station Support
 - [ ] End web radio signal
 - [x] Local File Support
-- [ ] Randomized Programming
+- [x] Randomized Programming
 - [ ] Scheduled Programming
 - [x] Local Folder support
 - [ ] Remote file support
 - [ ] Stop signal
 - [ ] WAV Support
+### Extras
 - [ ] UI for scheduler & running the daemon
 
 ## Config Setup
