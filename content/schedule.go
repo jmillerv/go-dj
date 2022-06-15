@@ -4,6 +4,7 @@ import (
 	"github.com/jmillerv/go-utilities/formatter"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"math/rand"
 	"time"
 )
 
@@ -26,6 +27,8 @@ type Slot struct {
 	Begin string
 	End   string
 }
+
+var Shuffled bool
 
 var TimeslotMap = map[Timeslot]*Slot{
 	Early:      {"4:00 AM", "6:00 AM"},
@@ -50,8 +53,11 @@ func (s *Scheduler) Run() error {
 	log.Info("Starting Daemon")
 	now := time.Now()
 	ts := getTimeSlot(&now)
+	// if randomized mode do x
+
 	for _, p := range s.Content.Programs {
 		log.Debugf("program %v", formatter.StructToIndentedString(p))
+		// Check Timeslots
 		if ts == p.Timeslot || ts == All {
 			log.Infof("getting media type: %v", p.Type)
 			content := p.GetMedia()
@@ -60,10 +66,30 @@ func (s *Scheduler) Run() error {
 			content.Play() // play will block until done
 		}
 	}
+	// if radio station start 30 minute counter.
+	// smartly allocate programs to timeslots based on length if known
 	// if time between TimeSlotMap
 	// play program from that slot.
 	// wait for program to finish
 	// get next
+	return nil
+}
+
+// Shuffle plays through the config content at random
+func (s *Scheduler) Shuffle() error {
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(s.Content.Programs),
+		func(i, j int) {
+			s.Content.Programs[i], s.Content.Programs[j] = s.Content.Programs[j], s.Content.Programs[i]
+		})
+	for _, p := range s.Content.Programs {
+		log.Debugf("program %v", formatter.StructToIndentedString(p))
+		log.Infof("getting media type: %v", p.Type)
+		content := p.GetMedia()
+		log.Debugf("media struct: %v", content)
+		content.Get()
+		content.Play() // play will block until done
+	}
 	return nil
 }
 
