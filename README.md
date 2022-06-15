@@ -7,7 +7,7 @@ The use case I built this for was automating content for an AM radio station I r
 ## Dependencies
 Under the hood, this uses [beep](https://github.com/faiface/beep) to play the files. That package relies on [Oto](https://github.com/hajimehoshi/oto)
 which has dependencies that may need to be installed depending on the system you're running go-dj off of.
-[MPV](mpv.io) is used to support web radio streams. There are plans to remove this by making a package for dealing with web streams.
+[MPV](mpv.io) is used to support web radio streams. Ideally this gets removed by making a package for dealing with web streams, but is not considered necessary to reach the feature complete milestone. 
 
 ### Incompatibility Warning
 MPEG 2.5 is not supported because of underlying go-mp3 dependency.
