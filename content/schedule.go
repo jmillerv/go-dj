@@ -63,6 +63,7 @@ func (s *Scheduler) Run() error {
 			content := p.GetMedia()
 			log.Debugf("media struct: %v", content)
 			content.Get()
+			// TODO go routine to check for interrupts
 			content.Play() // play will block until done
 		}
 	}
@@ -88,6 +89,7 @@ func (s *Scheduler) Shuffle() error {
 		content := p.GetMedia()
 		log.Debugf("media struct: %v", content)
 		content.Get()
+		// TODO go routine to check for interrupts
 		content.Play() // play will block until done
 	}
 	return nil
