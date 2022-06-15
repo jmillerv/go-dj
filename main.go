@@ -25,10 +25,28 @@ func main() {
 				Action: func(c *cli.Context) {
 					log.Info("creating schedule from config")
 					s := content.NewScheduler(configFile)
+					if content.Shuffled {
+						log.Info("playing shuffled content")
+						err := s.Shuffle()
+						if err != nil {
+							log.WithError(err).Error("unable to run go-dj")
+						}
+						return
+					}
+					// run content normally
 					err := s.Run()
 					if err != nil {
 						log.WithError(err).Error("unable to run go-dj")
 					}
+				},
+				Flags: []cli.Flag{
+					cli.BoolFlag{
+						Name:        "random",
+						Usage:       "Start your radio station w/ randomized schedule",
+						Required:    false,
+						Hidden:      false,
+						Destination: &content.Shuffled,
+					},
 				},
 			},
 		},

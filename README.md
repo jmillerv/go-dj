@@ -2,7 +2,7 @@
 daemon for automating audio programming 
 
 ## Usage
-The use case I built this for was automating content for an AM radio station I run around my house.
+The use case I built this for was automating content for an AM radio station I run for myself; however, it can be installed on any Linux device with an output.
 
 ## Dependencies
 Under the hood, this uses [beep](https://github.com/faiface/beep) to play the files. That package relies on [Oto](https://github.com/hajimehoshi/oto)
@@ -16,10 +16,13 @@ MPEG 2.5 is not supported because of underlying go-mp3 dependency.
 ## Supported Content
 
 ### Local Files
-Local files are support and the config assumes that they are located in the same directory as the deamon.
+Local files are supported and the config assumes that they are located in the same directory as the deamon.
 
 ### Local Folder
 Folders are also supported and make the same directory assumptions as local files.
+
+### Web Radio 
+A web radio station can be supplied via URL in the config
 
 ## Roadmap
 - [ ] Podcast Support
@@ -31,6 +34,8 @@ Folders are also supported and make the same directory assumptions as local file
 - [x] Local Folder support
 - [ ] Remote file support
 - [ ] Stop signal
+- [ ] WAV Support
+- [ ] UI for scheduler & running the daemon
 
 ## Config Setup
 
@@ -70,7 +75,7 @@ but does have a path. When adding a LocalFile type to the programs be sure to us
 be cleaned up so that source can stand in for URL/Path/etc but I haven't abstracted that yet.
 
 ### Supported File Types
-At the moment go-dj only supports mp3 files.
+At the moment go-dj only supports mp3 files for local and remote files.
 
 ## Types
 
