@@ -16,7 +16,7 @@ MPEG 2.5 is not supported because of underlying go-mp3 dependency.
 ## Supported Content
 
 ### Local Files
-Local files are support and the config assumes that they are located in the same directory as the deamon.
+Local files are supported and the config assumes that they are located in the same directory as the deamon.
 
 ### Local Folder
 Folders are also supported and make the same directory assumptions as local files.
