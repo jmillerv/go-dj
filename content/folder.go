@@ -31,8 +31,6 @@ func (f *Folder) Play() {
 		l := f.getLocalFile(file)
 		l.Play()
 	}
-
-	panic("implement me")
 }
 
 func (f *Folder) Stop() {
