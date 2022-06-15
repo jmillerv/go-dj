@@ -38,6 +38,9 @@ A web radio station can be supplied via URL in the config
 - [ ] WAV Support
 ### Extras
 - [ ] UI for scheduler & running the daemon
+### Longshots
+- [ ] Remove MPV dependency
+- [ ] Remove beep & oto dependency
 
 ## Config Setup
 
