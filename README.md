@@ -35,6 +35,7 @@ A web radio station can be supplied via URL in the config
 - [ ] Remote file support
 - [ ] Stop signal
 - [ ] WAV Support
+- [ ] UI for scheduler & running the daemon
 
 ## Config Setup
 
