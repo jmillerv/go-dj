@@ -103,14 +103,29 @@ func (s *Scheduler) Shuffle() error {
 		func(i, j int) {
 			s.Content.Programs[i], s.Content.Programs[j] = s.Content.Programs[j], s.Content.Programs[i]
 		})
+
+	// setup signal listeners
+	sigchnl := make(chan os.Signal, 1)
+	signal.Notify(sigchnl)
+	exitchnl := make(chan int)
+
 	for _, p := range s.Content.Programs {
 		log.Debugf("program %v", formatter.StructToIndentedString(p))
 		log.Infof("getting media type: %v", p.Type)
 		content := p.GetMedia()
 		log.Debugf("media struct: %v", content)
 		content.Get()
-		go content.Play() // play will block until done
+		go func() {
+			for {
+				stop := <-sigchnl
+				s.Stop(stop, content)
+			}
+		}()
+		content.Play() // play will block until done
 	}
+
+	exitcode := <-exitchnl
+	os.Exit(exitcode)
 	return nil
 }
 
