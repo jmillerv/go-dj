@@ -10,10 +10,9 @@ import (
 )
 
 type LocalFile struct {
-	Name     string
-	Content  *os.File
-	Path     string
-	streamer beep.StreamSeekCloser
+	Name    string
+	Content *os.File
+	Path    string
 }
 
 func (l *LocalFile) Get() {
@@ -31,15 +30,14 @@ func (l *LocalFile) Play() {
 	if err != nil {
 		log.WithError(err).Fatal("unable to decode mp3")
 	}
-	l.streamer = streamer
-	defer l.streamer.Close()
+	defer streamer.Close()
 	log.Infof("playing file buffer from %v", l.Path)
 	err = speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
 	if err != nil {
 		log.WithError(err).Fatal("unable to play file")
 	}
 	done := make(chan bool)
-	speaker.Play(beep.Seq(l.streamer, beep.Callback(func() {
+	speaker.Play(beep.Seq(streamer, beep.Callback(func() {
 		done <- true
 	})))
 	<-done
