@@ -35,7 +35,6 @@ A web radio station can be supplied via URL in the config
 - [ ] Remote file support
 - [x] Stop signal
 - [ ] WAV Support
-- [ ] [Funkwhale API integration](https://docs.funkwhale.audio/api.html)
 - [ ] Timeslots in config
 
 ### Extras
@@ -47,6 +46,7 @@ A web radio station can be supplied via URL in the config
 
 ### Longshots
 - [ ] Plugins for consuming additional types of audio 
+- [ ] [Funkwhale API integration](https://docs.funkwhale.audio/api.html)
 - [ ] Remove MPV dependency
 - [ ] Remove beep & oto dependency
 
