@@ -1,5 +1,7 @@
 package content
 
+// content type should be able to be set from the configuration
+
 const (
 	podcastContent      MediaType = "podcast"
 	announcementContent MediaType = "announcement"

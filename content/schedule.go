@@ -1,10 +1,14 @@
 package content
 
 import (
+	"fmt"
 	"github.com/jmillerv/go-utilities/formatter"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"math/rand"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -51,10 +55,19 @@ type Scheduler struct {
 
 func (s *Scheduler) Run() error {
 	log.Info("Starting Daemon")
+
+	log.Infof("Press ESC to quit")
+	// set up the loop to continuously check for key entries
 	now := time.Now()
 	ts := getTimeSlot(&now)
 	// if randomized mode do x
 
+	// setup signal listeners
+	sigchnl := make(chan os.Signal, 1)
+	signal.Notify(sigchnl)
+	exitchnl := make(chan int)
+
+	// check content from scheduler and run through it
 	for _, p := range s.Content.Programs {
 		log.Debugf("program %v", formatter.StructToIndentedString(p))
 		// Check Timeslots
@@ -63,16 +76,23 @@ func (s *Scheduler) Run() error {
 			content := p.GetMedia()
 			log.Debugf("media struct: %v", content)
 			content.Get()
-			// TODO go routine to check for interrupts
+			go func() {
+				for {
+					stop := <-sigchnl
+					s.Stop(stop, content)
+				}
+			}()
 			content.Play() // play will block until done
 		}
 	}
 	// if radio station start 30 minute counter.
 	// smartly allocate programs to timeslots based on length if known
-	// if time between TimeSlotMap
+	// if time between TimeSlotMap do x
 	// play program from that slot.
 	// wait for program to finish
 	// get next
+	exitcode := <-exitchnl
+	os.Exit(exitcode)
 	return nil
 }
 
@@ -89,10 +109,24 @@ func (s *Scheduler) Shuffle() error {
 		content := p.GetMedia()
 		log.Debugf("media struct: %v", content)
 		content.Get()
-		// TODO go routine to check for interrupts
-		content.Play() // play will block until done
+		go content.Play() // play will block until done
 	}
 	return nil
+}
+
+func (s *Scheduler) Stop(signal os.Signal, media Media) {
+	if signal == syscall.SIGTERM {
+		log.Info("Got kill signal. ")
+		media.Stop()
+		log.Info("Program will terminate now.")
+		os.Exit(0)
+	} else if signal == syscall.SIGINT {
+		media.Stop()
+		log.Info("Got CTRL+C signal")
+		media.Stop()
+		fmt.Println("Closing.")
+		os.Exit(0)
+	}
 }
 
 func getTimeSlot(t *time.Time) Timeslot {

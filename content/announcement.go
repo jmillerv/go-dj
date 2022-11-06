@@ -1,5 +1,7 @@
 package content
 
+import log "github.com/sirupsen/logrus"
+
 // Not yet implemented
 
 type Announcement struct {
@@ -18,5 +20,5 @@ func (a *Announcement) Play() {
 }
 
 func (a *Announcement) Stop() {
-	panic("implement me")
+	log.Infof("Stopping stream from %v ", a.Path)
 }

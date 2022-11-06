@@ -34,7 +34,7 @@ func (f *Folder) Play() {
 }
 
 func (f *Folder) Stop() {
-	panic("implement me")
+	log.Infof("Stopping stream from %v ", f.Path)
 }
 
 func (f *Folder) getLocalFile(file fs.FileInfo) *LocalFile {
