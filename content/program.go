@@ -42,6 +42,9 @@ func (p *Program) mediaFactory() Media {
 		radio.URL = p.Source
 		log.Debugf("returning WebRadio: %v", formatter.StructToString(radio))
 		return radio
+	case *FunkWhale:
+		funkwhale := m.(*FunkWhale)
+		return funkwhale
 	}
 	return nil
 }

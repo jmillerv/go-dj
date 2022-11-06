@@ -15,10 +15,10 @@ const player = "mpv"
 type WebRadio struct {
 	Name   string
 	URL    string
-	Player wrCommand
+	Player webRadioCommand
 }
 
-type wrCommand struct {
+type webRadioCommand struct {
 	playerName string
 	url        string
 	isPlaying  bool
@@ -28,7 +28,7 @@ type wrCommand struct {
 	pipeChan   chan io.ReadCloser
 }
 
-var wrc wrCommand
+var wrc webRadioCommand
 
 func (w *WebRadio) Get() {
 	var err error
@@ -48,7 +48,7 @@ func (w *WebRadio) Get() {
 }
 
 func (w *WebRadio) Play() {
-	log.Infof("streaming from URL %v ", w.URL)
+	log.Infof("streaming from %v ", w.URL)
 	if !w.Player.isPlaying {
 		err := w.Player.command.Start()
 		if err != nil {
@@ -62,9 +62,26 @@ func (w *WebRadio) Play() {
 		}()
 		<-done
 	}
-
 }
 
 func (w *WebRadio) Stop() {
-	panic("implement me")
+	log.Infof("Stopping stream from %v ", w.URL)
+	if w.Player.isPlaying {
+		w.Player.isPlaying = false
+		_, err := w.Player.in.Write([]byte("q"))
+		if err != nil {
+			log.WithError(err).Error("error stopping web radio player: w.Player.in.Write()")
+		}
+		err = w.Player.in.Close()
+		if err != nil {
+			log.WithError(err).Error("error stopping web radio player: w.Player.in.Close()")
+		}
+		err = w.Player.out.Close()
+		if err != nil {
+			log.WithError(err).Error("error stopping web radio player: w.Player.out.Close()")
+		}
+		w.Player.command = nil
+
+		w.Player.url = ""
+	}
 }

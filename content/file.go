@@ -44,5 +44,5 @@ func (l *LocalFile) Play() {
 }
 
 func (l *LocalFile) Stop() {
-	panic("implement me")
+	log.Infof("Stopping stream from %v ", l.Path)
 }
