@@ -28,7 +28,6 @@ A web radio station can be supplied via URL in the config
 ### Feature Complete
 - [ ] Podcast Support
 - [x] Web Radio Station Support
-- [ ] End web radio signal
 - [x] Local File Support
 - [x] Randomized Programming
 - [ ] Scheduled Programming
