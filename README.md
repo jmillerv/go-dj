@@ -37,7 +37,8 @@ A web radio station can be supplied via URL in the config
 - [x] Stop signal
 - [ ] WAV Support
 - [ ] [Funkwhale API integration](https://docs.funkwhale.audio/api.html)
-- 
+- [ ] Timeslots in config
+
 ### Extras
 - [ ] UI for scheduler & running the daemon
 - [ ] Unit Tests
