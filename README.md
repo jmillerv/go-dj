@@ -39,6 +39,11 @@ A web radio station can be supplied via URL in the config
 - [ ] [Funkwhale API integration](https://docs.funkwhale.audio/api.html)
 ### Extras
 - [ ] UI for scheduler & running the daemon
+- [ ] Unit Tests
+- [ ] Pipeline 
+- [ ] User Manual - Printable for workshops
+- [ ] Docs
+
 ### Longshots
 - [ ] Plugins for consuming additional types of audio 
 - [ ] Remove MPV dependency
