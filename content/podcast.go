@@ -9,11 +9,11 @@ type Podcast struct {
 	Content []byte
 }
 
-func (p *Podcast) Get() {
+func (p *Podcast) Get() error {
 	panic("implement me")
 }
 
-func (p *Podcast) Play() {
+func (p *Podcast) Play() error {
 	panic("implement me")
 }
 

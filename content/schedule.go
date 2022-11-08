@@ -75,14 +75,20 @@ func (s *Scheduler) Run() error {
 			log.Infof("getting media type: %v", p.Type)
 			content := p.GetMedia()
 			log.Debugf("media struct: %v", content)
-			content.Get()
+			err := content.Get()
+			if err != nil {
+				return err
+			}
 			go func() {
 				for {
 					stop := <-sigchnl
 					s.Stop(stop, content)
 				}
 			}()
-			content.Play() // play will block until done
+			err = content.Play()
+			if err != nil {
+				return err
+			} // play will block until done
 		}
 	}
 	// if radio station start 30 minute counter.
@@ -114,14 +120,20 @@ func (s *Scheduler) Shuffle() error {
 		log.Infof("getting media type: %v", p.Type)
 		content := p.GetMedia()
 		log.Debugf("media struct: %v", content)
-		content.Get()
+		err := content.Get()
+		if err != nil {
+			return err
+		}
 		go func() {
 			for {
 				stop := <-sigchnl
 				s.Stop(stop, content)
 			}
 		}()
-		content.Play() // play will block until done
+		err = content.Play()
+		if err != nil {
+			return err
+		} // play will block until done
 	}
 
 	exitcode := <-exitchnl

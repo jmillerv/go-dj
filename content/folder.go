@@ -1,9 +1,9 @@
 package content
 
 import (
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
-	"io/fs"
-	"io/ioutil"
+	"os"
 )
 
 // The folder structure exists because I didn't want to load an entire folder's worth
@@ -12,32 +12,37 @@ import (
 // Folder is a struct for parsing folders that implements the Media interface
 type Folder struct {
 	Name    string
-	Content *[]fs.FileInfo
+	Content []os.DirEntry
 	Path    string
 }
 
-func (f *Folder) Get() {
+func (f *Folder) Get() error {
 	log.Infof("buffering files from %s", f.Path)
-	folder, err := ioutil.ReadDir(f.Path)
+	folder, err := os.ReadDir(f.Path)
 	if err != nil {
-		log.WithError(err).Error("unable to read folder from path")
+		return errors.Wrap(err, "unable to read folder from path")
 	}
-	f.Content = &folder
+	f.Content = folder
+	return nil
 }
 
-func (f *Folder) Play() {
+func (f *Folder) Play() error {
 	// loop through the folder and play each as a local file
-	for _, file := range *f.Content {
+	for _, file := range f.Content {
 		l := f.getLocalFile(file)
-		l.Play()
+		err := l.Play()
+		if err != nil {
+			return errors.Wrap(err, "unable to play file from folder")
+		}
 	}
+	return nil
 }
 
 func (f *Folder) Stop() {
 	log.Infof("Stopping stream from %v ", f.Path)
 }
 
-func (f *Folder) getLocalFile(file fs.FileInfo) *LocalFile {
+func (f *Folder) getLocalFile(file os.DirEntry) *LocalFile {
 	l := &LocalFile{
 		Name: file.Name(),
 		Path: f.Path + "/" + file.Name(),

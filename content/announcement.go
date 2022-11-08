@@ -1,6 +1,9 @@
 package content
 
-import log "github.com/sirupsen/logrus"
+import (
+	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
+)
 
 // Not yet implemented
 
@@ -11,12 +14,12 @@ type Announcement struct {
 	Path    string
 } // it may be possible to simply make announcement use the file struct and add a URL to the file struct
 
-func (a *Announcement) Get() {
-	panic("implement me")
+func (a *Announcement) Get() error {
+	return errors.Wrap(errors.New("test"), "implement me")
 }
 
-func (a *Announcement) Play() {
-	panic("implement me")
+func (a *Announcement) Play() error {
+	return errors.Wrap(errors.New("test"), "implement me")
 }
 
 func (a *Announcement) Stop() {

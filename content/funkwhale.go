@@ -5,12 +5,12 @@ package content
 type FunkWhale struct {
 }
 
-func (f FunkWhale) Get() {
+func (f FunkWhale) Get() error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (f FunkWhale) Play() {
+func (f FunkWhale) Play() error {
 	//TODO implement me
 	panic("implement me")
 }

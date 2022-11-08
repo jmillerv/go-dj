@@ -5,6 +5,7 @@ package content
 // inspiration for this solution came from https://github.com/jcheng8/goradio
 
 import (
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"os/exec"
@@ -30,29 +31,30 @@ type webRadioCommand struct {
 
 var wrc webRadioCommand
 
-func (w *WebRadio) Get() {
+func (w *WebRadio) Get() error {
 	var err error
 	wrc.playerName = player
 	wrc.url = w.URL
 	wrc.command = exec.Command(wrc.playerName, "-quiet", "-playlist", wrc.url)
 	wrc.in, err = wrc.command.StdinPipe()
 	if err != nil {
-		log.WithError(err).Error("error creating standard pipe in")
+		return errors.Wrap(err, "error creating standard pipe in")
 	}
 	wrc.out, err = wrc.command.StdoutPipe()
 	if err != nil {
-		log.WithError(err).Error("error creating standard pipe out")
+		return errors.Wrap(err, "error creating standard pipe out")
 	}
 	wrc.isPlaying = false
 	w.Player = wrc
+	return nil
 }
 
-func (w *WebRadio) Play() {
+func (w *WebRadio) Play() error {
 	log.Infof("streaming from %v ", w.URL)
 	if !w.Player.isPlaying {
 		err := w.Player.command.Start()
 		if err != nil {
-			log.WithError(err).Error("error starting web radio player")
+			return errors.Wrap(err, "error starting web radio player")
 		}
 		w.Player.isPlaying = true
 		done := make(chan bool)
@@ -62,6 +64,7 @@ func (w *WebRadio) Play() {
 		}()
 		<-done
 	}
+	return nil
 }
 
 func (w *WebRadio) Stop() {

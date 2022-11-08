@@ -1,5 +1,7 @@
 package content
 
+//go:generate mockgen -source ./$GOFILE -destination ./mocks/mock_$GOFILE -package $GOPACKAGE
+
 // content type should be able to be set from the configuration
 
 const (
@@ -21,7 +23,7 @@ var MediaTypeMap = map[MediaType]Media{
 }
 
 type Media interface {
-	Get()
-	Play()
+	Get() error
+	Play() error
 	Stop()
 }
