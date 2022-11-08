@@ -1,6 +1,9 @@
 package content
 
-import "testing"
+import (
+	"github.com/pkg/errors"
+	"testing"
+)
 
 func TestAnnouncement_Get(t *testing.T) {
 	type fields struct {
@@ -14,7 +17,16 @@ func TestAnnouncement_Get(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Error: implement me",
+			fields: fields{
+				Name:    "Test",
+				Content: nil,
+				URL:     "test.com",
+				Path:    "/path/to/file",
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -24,7 +36,8 @@ func TestAnnouncement_Get(t *testing.T) {
 				URL:     tt.fields.URL,
 				Path:    tt.fields.Path,
 			}
-			if err := a.Get(); (err != nil) != tt.wantErr {
+			err := a.Get()
+			if !errors.Is(err, errors.Wrap(err, "implement me")) {
 				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

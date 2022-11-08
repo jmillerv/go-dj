@@ -1,6 +1,9 @@
 package content
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 func TestLocalFile_Get(t *testing.T) {
 	type fields struct {
