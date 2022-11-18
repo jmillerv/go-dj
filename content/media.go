@@ -1,5 +1,10 @@
 package content
 
+import (
+	"github.com/faiface/beep"
+	"io"
+)
+
 // content type should be able to be set from the configuration
 
 const (
@@ -20,8 +25,14 @@ var MediaTypeMap = map[MediaType]Media{
 	folderContent:       new(Folder),
 }
 
+// Media is the interface to represent playing any type of audio.
 type Media interface {
 	Get()
 	Play()
 	Stop()
+}
+
+// Decoder is an interface to the beep package.
+type Decoder interface {
+	Decode(rc io.ReadCloser) (s beep.StreamSeekCloser, format beep.Format, err error)
 }
