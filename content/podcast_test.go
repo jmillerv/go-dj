@@ -1,16 +1,16 @@
 package content_test
 
 import (
-	"github.com/jmillerv/go-dj/content"
-	"os"
+	. "github.com/jmillerv/go-dj/content"
 	"testing"
 )
 
-func TestFolder_Get(t *testing.T) {
+func TestPodcast_Get(t *testing.T) {
 	type fields struct {
 		Name    string
-		Content []os.DirEntry
+		URL     string
 		Path    string
+		Content []byte
 	}
 	tests := []struct {
 		name    string
@@ -21,23 +21,25 @@ func TestFolder_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f := &content.Folder{
+			p := &Podcast{
 				Name:    tt.fields.Name,
-				Content: tt.fields.Content,
+				URL:     tt.fields.URL,
 				Path:    tt.fields.Path,
+				Content: tt.fields.Content,
 			}
-			if err := f.Get(); (err != nil) != tt.wantErr {
+			if err := p.Get(); (err != nil) != tt.wantErr {
 				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func TestFolder_Play(t *testing.T) {
+func TestPodcast_Play(t *testing.T) {
 	type fields struct {
 		Name    string
-		Content []os.DirEntry
+		URL     string
 		Path    string
+		Content []byte
 	}
 	tests := []struct {
 		name    string
@@ -48,41 +50,41 @@ func TestFolder_Play(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f := &content.Folder{
+			p := &Podcast{
 				Name:    tt.fields.Name,
-				Content: tt.fields.Content,
+				URL:     tt.fields.URL,
 				Path:    tt.fields.Path,
+				Content: tt.fields.Content,
 			}
-			if err := f.Play(); (err != nil) != tt.wantErr {
+			if err := p.Play(); (err != nil) != tt.wantErr {
 				t.Errorf("Play() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func TestFolder_Stop(t *testing.T) {
+func TestPodcast_Stop(t *testing.T) {
 	type fields struct {
 		Name    string
-		Content []os.DirEntry
+		URL     string
 		Path    string
+		Content []byte
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
+		name   string
+		fields fields
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f := &content.Folder{
+			p := &Podcast{
 				Name:    tt.fields.Name,
-				Content: tt.fields.Content,
+				URL:     tt.fields.URL,
 				Path:    tt.fields.Path,
+				Content: tt.fields.Content,
 			}
-			if err := f.Stop(); (err != nil) != tt.wantErr {
-				t.Errorf("Stop() error = %v, wantErr %v", err, tt.wantErr)
-			}
+			p.Stop()
 		})
 	}
 }

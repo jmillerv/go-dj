@@ -1,15 +1,15 @@
-package content_test
+package content
 
 import (
-	"github.com/jmillerv/go-dj/content"
-	"os"
+	"github.com/pkg/errors"
 	"testing"
 )
 
-func TestFolder_Get(t *testing.T) {
+func TestAnnouncement_Get(t *testing.T) {
 	type fields struct {
 		Name    string
-		Content []os.DirEntry
+		Content []byte
+		URL     string
 		Path    string
 	}
 	tests := []struct {
@@ -17,26 +17,38 @@ func TestFolder_Get(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Error: implement me",
+			fields: fields{
+				Name:    "Test",
+				Content: nil,
+				URL:     "test.com",
+				Path:    "/path/to/file",
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f := &content.Folder{
+			a := &Announcement{
 				Name:    tt.fields.Name,
 				Content: tt.fields.Content,
+				URL:     tt.fields.URL,
 				Path:    tt.fields.Path,
 			}
-			if err := f.Get(); (err != nil) != tt.wantErr {
+			err := a.Get()
+			if !errors.Is(err, errors.Wrap(err, "implement me")) {
 				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func TestFolder_Play(t *testing.T) {
+func TestAnnouncement_Play(t *testing.T) {
 	type fields struct {
 		Name    string
-		Content []os.DirEntry
+		Content []byte
+		URL     string
 		Path    string
 	}
 	tests := []struct {
@@ -48,41 +60,41 @@ func TestFolder_Play(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f := &content.Folder{
+			a := &Announcement{
 				Name:    tt.fields.Name,
 				Content: tt.fields.Content,
+				URL:     tt.fields.URL,
 				Path:    tt.fields.Path,
 			}
-			if err := f.Play(); (err != nil) != tt.wantErr {
+			if err := a.Play(); (err != nil) != tt.wantErr {
 				t.Errorf("Play() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func TestFolder_Stop(t *testing.T) {
+func TestAnnouncement_Stop(t *testing.T) {
 	type fields struct {
 		Name    string
-		Content []os.DirEntry
+		Content []byte
+		URL     string
 		Path    string
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
+		name   string
+		fields fields
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f := &content.Folder{
+			a := &Announcement{
 				Name:    tt.fields.Name,
 				Content: tt.fields.Content,
+				URL:     tt.fields.URL,
 				Path:    tt.fields.Path,
 			}
-			if err := f.Stop(); (err != nil) != tt.wantErr {
-				t.Errorf("Stop() error = %v, wantErr %v", err, tt.wantErr)
-			}
+			a.Stop()
 		})
 	}
 }
