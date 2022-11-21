@@ -2,7 +2,7 @@
 daemon for automating audio programming 
 
 ## Usage
-The use case I built this for was automating content for an AM radio station I run for myself; however, it can be installed on any Linux device with an audio output.
+This code was developed for automating content for an AM radio station; however, it can be installed on any Linux device with an audio output.
 
 ## Dependencies
 Under the hood, this uses [beep](https://github.com/faiface/beep) to play the files. That package relies on [Oto](https://github.com/hajimehoshi/oto)
