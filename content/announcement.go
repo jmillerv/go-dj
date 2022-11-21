@@ -11,14 +11,15 @@ type Announcement struct {
 	Path    string
 } // it may be possible to simply make announcement use the file struct and add a URL to the file struct
 
-func (a *Announcement) Get() {
+func (a *Announcement) Get() error {
 	panic("implement me")
 }
 
-func (a *Announcement) Play() {
+func (a *Announcement) Play() error {
 	panic("implement me")
 }
 
-func (a *Announcement) Stop() {
+func (a *Announcement) Stop() error {
 	log.Infof("Stopping stream from %v ", a.Path)
+	return nil
 }

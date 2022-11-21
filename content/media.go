@@ -27,9 +27,9 @@ var MediaTypeMap = map[MediaType]Media{
 
 // Media is the interface to represent playing any type of audio.
 type Media interface {
-	Get()
-	Play()
-	Stop()
+	Get() error
+	Play() error
+	Stop() error
 }
 
 // Decoder is an interface to the beep package.

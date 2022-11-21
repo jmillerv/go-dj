@@ -30,7 +30,7 @@ type webRadioCommand struct {
 
 var wrc webRadioCommand
 
-func (w *WebRadio) Get() {
+func (w *WebRadio) Get() error {
 	var err error
 	wrc.playerName = player
 	wrc.url = w.URL
@@ -45,9 +45,10 @@ func (w *WebRadio) Get() {
 	}
 	wrc.isPlaying = false
 	w.Player = wrc
+	return nil
 }
 
-func (w *WebRadio) Play() {
+func (w *WebRadio) Play() error {
 	log.Infof("streaming from %v ", w.URL)
 	if !w.Player.isPlaying {
 		err := w.Player.command.Start()
@@ -62,9 +63,10 @@ func (w *WebRadio) Play() {
 		}()
 		<-done
 	}
+	return nil
 }
 
-func (w *WebRadio) Stop() {
+func (w *WebRadio) Stop() error {
 	log.Infof("Stopping stream from %v ", w.URL)
 	if w.Player.isPlaying {
 		w.Player.isPlaying = false
@@ -84,4 +86,5 @@ func (w *WebRadio) Stop() {
 
 		w.Player.url = ""
 	}
+	return nil
 }

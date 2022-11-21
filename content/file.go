@@ -2,6 +2,7 @@ package content
 
 import (
 	"errors"
+	"fmt"
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/flac"
 	"github.com/faiface/beep/mp3"
@@ -33,32 +34,32 @@ type LocalFile struct {
 	fileType         string
 }
 
-func (l *LocalFile) Get() {
+func (l *LocalFile) Get() error {
 	log.Infof("buffering file from %s", l.Path)
 	f, err := os.Open(l.Path)
 	if err != nil {
-		log.WithError(err).Error("unable to open file from path")
+		return errors.New(fmt.Sprintf("unable to open file from path: %v", err))
 	}
 	log.Infof("decoding file from %v", l.Path)
 	l.Content = f
+	return nil
 }
 
-func (l *LocalFile) Play() {
+func (l *LocalFile) Play() error {
 	var streamer beep.StreamSeekCloser
 	var format beep.Format
 	err := l.setDecoder()
 	if err != nil {
-		log.WithError(err).Error("error setting decoder")
-		return
+		return errors.New(fmt.Sprintf("error setting decoder: %v", err))
 	}
 	_, err = l.Content.Seek(0, 0)
 	if err != nil {
-		log.WithError(err).Fatal("unable to seek to beginning of file")
+		return errors.New(fmt.Sprintf("unable to seek to beginning of file: %v", err))
 	}
 	if l.fileType == wavFile || l.fileType == flacFile {
 		streamer, format, err = l.decodeReader(l.Content)
 		if err != nil {
-			log.WithError(err).Fatal("unable to decode file")
+			return errors.New(fmt.Sprintf("unable to decode file: %v", err))
 		}
 	}
 	if l.fileType == mp3File || l.fileType == oggFile {
@@ -70,17 +71,19 @@ func (l *LocalFile) Play() {
 	log.Infof("playing file buffer from %v", l.Path)
 	err = speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
 	if err != nil {
-		log.WithError(err).Fatal("unable to play file")
+		return errors.New(fmt.Sprintf("unable to play file: %v", err))
 	}
 	done := make(chan bool)
 	speaker.Play(beep.Seq(streamer, beep.Callback(func() {
 		done <- true
 	})))
 	<-done
+	return nil
 }
 
-func (l *LocalFile) Stop() {
+func (l *LocalFile) Stop() error {
 	log.Infof("Stopping stream from %v ", l.Path)
+	return nil
 }
 
 func (l *LocalFile) setDecoder() error {

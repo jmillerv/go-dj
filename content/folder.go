@@ -1,9 +1,10 @@
 package content
 
 import (
+	"errors"
+	"fmt"
 	log "github.com/sirupsen/logrus"
-	"io/fs"
-	"io/ioutil"
+	"os"
 )
 
 // The folder structure exists because I didn't want to load an entire folder's worth
@@ -12,36 +13,47 @@ import (
 // Folder is a struct for parsing folders that implements the Media interface
 type Folder struct {
 	Name    string
-	Content *[]fs.FileInfo
+	Content []os.DirEntry
 	Path    string
 }
 
-func (f *Folder) Get() {
+func (f *Folder) Get() (err error) {
 	log.Infof("buffering files from %s", f.Path)
-	folder, err := ioutil.ReadDir(f.Path)
+	f.Content, err = os.ReadDir(f.Path)
 	if err != nil {
-		log.WithError(err).Error("unable to read folder from path")
+		return errors.New(fmt.Sprintf("unable to read folder from path: %v", err))
 	}
-	f.Content = &folder
+	return nil
 }
 
-func (f *Folder) Play() {
+func (f *Folder) Play() error {
 	// loop through the folder and play each as a local file
-	for _, file := range *f.Content {
-		l := f.getLocalFile(file)
-		l.Play()
+	for _, file := range f.Content {
+		localFile, err := f.getLocalFile(file)
+		if err != nil {
+			return err
+		}
+		err = localFile.Play()
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
-func (f *Folder) Stop() {
+func (f *Folder) Stop() error {
 	log.Infof("Stopping stream from %v ", f.Path)
+	return nil
 }
 
-func (f *Folder) getLocalFile(file fs.FileInfo) *LocalFile {
-	l := &LocalFile{
+func (f *Folder) getLocalFile(file os.DirEntry) (*LocalFile, error) {
+	localFile := &LocalFile{
 		Name: file.Name(),
 		Path: f.Path + "/" + file.Name(),
 	}
-	l.Get()
-	return l
+	err := localFile.Get()
+	if err != nil {
+		return nil, err
+	}
+	return localFile, nil
 }
