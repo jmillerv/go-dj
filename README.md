@@ -34,12 +34,12 @@ A web radio station can be supplied via URL in the config
 - [x] Local Folder support
 - [ ] Remote file support
 - [x] Stop signal
-- [ ] WAV Support
+- [x] WAV, OGG, FLAC Support
 - [ ] Timeslots in config
+- [ ] Unit Tests
 
 ### Extras
 - [ ] UI for scheduler & running the daemon
-- [ ] Unit Tests
 - [ ] Pipeline 
 - [ ] User Manual - Printable for workshops
 - [ ] Docs
