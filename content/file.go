@@ -118,7 +118,7 @@ func (l *LocalFile) getFileType(buf []byte) string {
 	ext := filepath.Ext(l.Path)
 	trimmedExt := strings.TrimLeft(ext, ".") // remove the delimiter
 	// added the trim check because some supported filetypes were not recognized by
-	// the filetype.IsType function despite having proper extension
+	// the filetype.IsType function despite having proper extension and working with the respective decoder
 	if filetype.IsType(buf, filetype.GetType("wav")) || trimmedExt == wavFile {
 		return wavFile
 	}
