@@ -56,14 +56,12 @@ func (l *LocalFile) Play() {
 		log.WithError(err).Fatal("unable to seek to beginning of file")
 	}
 	if l.fileType == wavFile || l.fileType == flacFile {
-		log.Infof("decoding %s", l.fileType)
 		streamer, format, err = l.decodeReader(l.Content)
 		if err != nil {
 			log.WithError(err).Fatal("unable to decode file")
 		}
 	}
 	if l.fileType == mp3File || l.fileType == oggFile {
-		log.Infof("decoding %s", l.fileType)
 		streamer, format, err = l.decodeReadCloser(l.Content)
 		if err != nil {
 			log.WithError(err).Fatal("unable to decode file")
