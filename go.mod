@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/faiface/beep v1.1.0
+	github.com/h2non/filetype v1.1.3
 	github.com/jmillerv/go-utilities v0.0.0-20211009175413-077cd5304cea
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.8.1
@@ -16,7 +17,12 @@ require (
 	github.com/hajimehoshi/go-mp3 v0.3.0 // indirect
 	github.com/hajimehoshi/oto v0.7.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/icza/bitio v1.0.0 // indirect
+	github.com/jfreymuth/oggvorbis v1.0.1 // indirect
+	github.com/jfreymuth/vorbis v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
+	github.com/mewkiz/flac v1.0.7 // indirect
+	github.com/mewkiz/pkg v0.0.0-20190919212034-518ade7978e2 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/pelletier/go-toml v1.9.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
