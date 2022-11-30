@@ -2,7 +2,7 @@
 daemon for automating audio programming 
 
 ## Usage
-The use case I built this for was automating content for an AM radio station I run for myself; however, it can be installed on any Linux device with an audio output.
+This code was developed for automating content for an AM radio station; however, it can be installed on any Linux device with an audio output.
 
 ## Dependencies
 Under the hood, this uses [beep](https://github.com/faiface/beep) to play the files. That package relies on [Oto](https://github.com/hajimehoshi/oto)
@@ -25,7 +25,7 @@ Folders are also supported and make the same directory assumptions as local file
 A web radio station can be supplied via URL in the config
 
 ## Roadmap
-### Feature Complete
+### [Feature Complete](https://github.com/jmillerv/go-dj/issues?q=is%3Aopen+is%3Aissue+milestone%3A%22Feature+Complete%22)
 - [ ] Podcast Support
 - [x] Web Radio Station Support
 - [x] Local File Support
@@ -34,12 +34,12 @@ A web radio station can be supplied via URL in the config
 - [x] Local Folder support
 - [ ] Remote file support
 - [x] Stop signal
-- [ ] WAV Support
+- [x] WAV, OGG, FLAC Support
 - [ ] Timeslots in config
+- [ ] Unit Tests
 
 ### Extras
 - [ ] UI for scheduler & running the daemon
-- [ ] Unit Tests
 - [ ] Pipeline 
 - [ ] User Manual - Printable for workshops
 - [ ] Docs
