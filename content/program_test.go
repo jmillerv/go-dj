@@ -2,35 +2,91 @@ package content_test
 
 import (
 	. "github.com/jmillerv/go-dj/content"
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestProgram_GetMedia(t *testing.T) {
+	t.Parallel()
 	type fields struct {
-		Name     string
-		Source   string
-		Timeslot Timeslot
-		Type     MediaType
+		program *Program
 	}
 	tests := []struct {
 		name   string
 		fields fields
 		want   Media
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Success: returns folder",
+			fields: fields{
+				program: &Program{
+					Name:     "David Rovics Folder",
+					Source:   "./static/david_rovics",
+					Timeslot: "early",
+					Type:     "folder",
+				},
+			},
+			want: (&Program{
+				Name:     "David Rovics Folder",
+				Source:   "./static/david_rovics",
+				Timeslot: "early",
+				Type:     "folder",
+			}).GetMedia(),
+		},
+		{
+			name: "Success: returns file",
+			fields: fields{
+				program: &Program{
+					Name:     "Piano Six Seconds",
+					Source:   "./static/piano_six_seconds.mp3",
+					Timeslot: "afternoon",
+					Type:     "file",
+				},
+			},
+			want: (&Program{
+				Name:     "Piano Six Seconds",
+				Source:   "./static/piano_six_seconds.mp3",
+				Timeslot: "afternoon",
+				Type:     "file",
+			}).GetMedia(),
+		},
+		{
+			name: "Success: returns web radio",
+			fields: fields{
+				program: &Program{
+					Name:     "Indie Pop Rocks",
+					Source:   "https://somafm.com/indiepop.pls",
+					Timeslot: "any",
+					Type:     "web_radio",
+				},
+			},
+			want: (&Program{
+				Name:     "Indie Pop Rocks",
+				Source:   "https://somafm.com/indiepop.pls",
+				Timeslot: "any",
+				Type:     "web_radio",
+			}).GetMedia(),
+		},
+		{
+			name: "Returns nil",
+			fields: fields{
+				program: &Program{Type: "test"},
+			},
+			want: nil,
+		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			p := &Program{
-				Name:     tt.fields.Name,
-				Source:   tt.fields.Source,
-				Timeslot: tt.fields.Timeslot,
-				Type:     tt.fields.Type,
+				Name:     tt.fields.program.Name,
+				Source:   tt.fields.program.Source,
+				Timeslot: tt.fields.program.Timeslot,
+				Type:     tt.fields.program.Type,
 			}
-			if got := p.GetMedia(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetMedia() = %v, want %v", got, tt.want)
-			}
+			got := p.GetMedia()
+			assert.ObjectsAreEqual(tt.want, got)
 		})
 	}
 }

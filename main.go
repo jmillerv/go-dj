@@ -24,17 +24,20 @@ func main() {
 				UsageText: "starts the daemon from the config",
 				Action: func(c *cli.Context) {
 					log.Info("creating schedule from config")
-					s := content.NewScheduler(configFile)
+					scheduler, err := content.NewScheduler(configFile)
+					if err != nil {
+						log.WithError(err).Error("unable to run go-dj")
+					}
 					if content.Shuffled {
 						log.Info("playing shuffled content")
-						err := s.Shuffle()
+						err = scheduler.Shuffle()
 						if err != nil {
 							log.WithError(err).Error("unable to run go-dj")
 						}
 						return
 					}
 					// run content normally
-					err := s.Run()
+					err = scheduler.Run()
 					if err != nil {
 						log.WithError(err).Error("unable to run go-dj")
 					}

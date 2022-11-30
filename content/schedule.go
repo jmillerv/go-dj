@@ -3,6 +3,7 @@ package content
 import (
 	"fmt"
 	"github.com/jmillerv/go-utilities/formatter"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"math/rand"
@@ -158,20 +159,25 @@ func getTimeSlot(t *time.Time) Timeslot {
 	return All
 }
 
-func NewScheduler(file string) *Scheduler {
+func NewScheduler(file string) (*Scheduler, error) {
 	log.Info("Loading Config File from: ", file)
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile(file)
 	if err := viper.ReadInConfig(); err != nil {
-		log.WithField("file", file).WithError(err).Error("Failed to unmarshal config file")
-		return nil
-	}
-	s := new(Scheduler)
 
-	if err := viper.Unmarshal(s); err != nil {
-		log.WithError(err).Error("unable to unmarshall config into struct")
-		return nil
+		log.WithField("file", file).WithError(err).Error("Failed to read in config file")
+		return nil, err
 	}
-	log.Info("config loaded", formatter.StructToIndentedString(s))
-	return s
+	scheduler := new(Scheduler)
+
+	if err := viper.Unmarshal(scheduler); err != nil {
+		log.WithError(err).Error("unable to unmarshal config into struct")
+		return nil, err
+	}
+	if scheduler.Content.Programs == nil {
+		return nil, errors.New("scheduler is empty")
+
+	}
+	log.Info("config loaded", formatter.StructToIndentedString(scheduler))
+	return scheduler, nil
 }

@@ -2,104 +2,81 @@ package content_test
 
 import (
 	. "github.com/jmillerv/go-dj/content"
-	"os"
-	"reflect"
+	log "github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestNewScheduler(t *testing.T) {
+	t.Parallel()
 	type args struct {
 		file string
 	}
-	tests := []struct {
-		name string
-		args args
-		want *Scheduler
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewScheduler(tt.args.file); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewScheduler() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestScheduler_Run(t *testing.T) {
-	type fields struct {
-		Content struct {
-			Programs []*Program
-		}
+	type want struct {
+		scheduler *Scheduler
 	}
 	tests := []struct {
 		name    string
-		fields  fields
+		args    args
+		want    *want
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Success: Returns scheduler",
+			args: args{
+				file: "../config.test.yml",
+			},
+			want: &want{
+				scheduler: &Scheduler{
+					Content: struct{ Programs []*Program }{Programs: []*Program{
+						{
+							Name:     "gettysburg10",
+							Source:   "./static/gettysburg10.wav",
+							Timeslot: Timeslot("afternoon"),
+							Type:     MediaType("file"),
+						},
+					}},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "Error: failed to read in config file",
+			args: args{
+				file: "./fakefile.yaml",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "Error: scheduler is empty",
+			args: args{
+				file: "../config.test-bad.yml",
+			},
+			want:    nil,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Scheduler{
-				Content: tt.fields.Content,
+			t.Parallel()
+			got, err := NewScheduler(tt.args.file)
+			if err != nil && tt.wantErr {
+				assert.Error(t, err)
+				return
 			}
-			if err := s.Run(); (err != nil) != tt.wantErr {
-				t.Errorf("Run() error = %v, wantErr %v", err, tt.wantErr)
+			if err == nil && tt.wantErr {
+				log.Info("error is nil, expected error")
+				t.Fail()
+				return
 			}
-		})
-	}
-}
-
-func TestScheduler_Shuffle(t *testing.T) {
-	type fields struct {
-		Content struct {
-			Programs []*Program
-		}
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			s := &Scheduler{
-				Content: tt.fields.Content,
+			if err != nil {
+				log.WithError(err)
+				t.Fail()
+				return
 			}
-			if err := s.Shuffle(); (err != nil) != tt.wantErr {
-				t.Errorf("Shuffle() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func TestScheduler_Stop(t *testing.T) {
-	type fields struct {
-		Content struct {
-			Programs []*Program
-		}
-	}
-	type args struct {
-		signal os.Signal
-		media  Media
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			s := &Scheduler{
-				Content: tt.fields.Content,
-			}
-			s.Stop(tt.args.signal, tt.args.media)
+			assert.ObjectsAreEqual(tt.want.scheduler, got)
 		})
 	}
 }
