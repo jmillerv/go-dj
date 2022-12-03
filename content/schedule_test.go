@@ -30,10 +30,13 @@ func TestNewScheduler(t *testing.T) {
 				scheduler: &Scheduler{
 					Content: struct{ Programs []*Program }{Programs: []*Program{
 						{
-							Name:     "gettysburg10",
-							Source:   "./static/gettysburg10.wav",
-							Timeslot: Timeslot("afternoon"),
-							Type:     MediaType("file"),
+							Name:   "gettysburg10",
+							Source: "./static/gettysburg10.wav",
+							Timeslot: &Timeslot{
+								Begin: "11:00PM",
+								End:   "11:30PM",
+							},
+							Type: MediaType("file"),
 						},
 					}},
 				},

@@ -13,40 +13,41 @@ import (
 	"time"
 )
 
-const (
-	Early      Timeslot = "early"
-	Morning    Timeslot = "morning"
-	Breakfast  Timeslot = "breakfast"
-	Midmorning Timeslot = "midmorning"
-	Afternoon  Timeslot = "afternoon"
-	Commute    Timeslot = "commute"
-	Evening    Timeslot = "evening"
-	Late       Timeslot = "late"
-	Overnight  Timeslot = "overnight"
-	All        Timeslot = "all"
-)
-
-type Timeslot string
-
-type Slot struct {
-	Begin string
-	End   string
-}
+//const (
+//	Early      Timeslot = "early"
+//	Morning    Timeslot = "morning"
+//	Breakfast  Timeslot = "breakfast"
+//	Midmorning Timeslot = "midmorning"
+//	Afternoon  Timeslot = "afternoon"
+//	Commute    Timeslot = "commute"
+//	Evening    Timeslot = "evening"
+//	Late       Timeslot = "late"
+//	Overnight  Timeslot = "overnight"
+//	All        Timeslot = "all"
+//)
+//
+//type Timeslot string
+//
+//type Slot struct {
+//	Begin string
+//	End   string
+//}
 
 var Shuffled bool
 
-var TimeslotMap = map[Timeslot]*Slot{
-	Early:      {"4:00 AM", "6:00 AM"},
-	Morning:    {"6:00 AM", "8:00 AM"},
-	Breakfast:  {"8:00 AM", "11:00 AM"},
-	Midmorning: {"11:00 AM", "2:00 PM"},
-	Afternoon:  {"2:00 PM", "5:00 PM"},
-	Commute:    {"5:00 PM", "7:00 PM"},
-	Evening:    {"7:00 PM", "11:00 PM"},
-	Late:       {"11:00 PM", "2:00 AM"},
-	Overnight:  {"2:00 AM", "4:00 AM"},
-	All:        {"12:00 AM", "12:00 PM"},
-}
+//
+//var TimeslotMap = map[Timeslot]*Slot{
+//	Early:      {"4:00 AM", "6:00 AM"},
+//	Morning:    {"6:00 AM", "8:00 AM"},
+//	Breakfast:  {"8:00 AM", "11:00 AM"},
+//	Midmorning: {"11:00 AM", "2:00 PM"},
+//	Afternoon:  {"2:00 PM", "5:00 PM"},
+//	Commute:    {"5:00 PM", "7:00 PM"},
+//	Evening:    {"7:00 PM", "11:00 PM"},
+//	Late:       {"11:00 PM", "2:00 AM"},
+//	Overnight:  {"2:00 AM", "4:00 AM"},
+//	All:        {"12:00 AM", "12:00 PM"},
+//}
 
 type Scheduler struct {
 	Content struct {
@@ -59,8 +60,7 @@ func (s *Scheduler) Run() error {
 
 	log.Infof("Press ESC to quit")
 	// set up the loop to continuously check for key entries
-	now := time.Now()
-	ts := getTimeSlot(&now)
+
 	// if randomized mode do x
 
 	// setup signal listeners
@@ -72,7 +72,7 @@ func (s *Scheduler) Run() error {
 	for _, p := range s.Content.Programs {
 		log.Debugf("program %v", formatter.StructToIndentedString(p))
 		// Check Timeslots
-		if ts == p.Timeslot || ts == All {
+		if p.Timeslot.IsScheduledNow() {
 			log.Infof("getting media type: %v", p.Type)
 			content := p.GetMedia()
 			log.Debugf("media struct: %v", content)
@@ -154,10 +154,10 @@ func (s *Scheduler) Stop(signal os.Signal, media Media) {
 	}
 }
 
-func getTimeSlot(t *time.Time) Timeslot {
-	// if t between certain times return Timeslot
-	return All
-}
+//func getTimeSlot(t *time.Time) Timeslot {
+//	// if t between certain times return Timeslot
+//	return All
+//}
 
 func NewScheduler(file string) (*Scheduler, error) {
 	log.Info("Loading Config File from: ", file)
