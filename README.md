@@ -38,7 +38,7 @@ A web radio station can be supplied via URL in the config
 - [x] Timeslots in config
 - [ ] Unit Tests
 
-### Nice To Have
+### [Nice To Have](https://github.com/jmillerv/go-dj/milestone/2)
 - [ ] UI for scheduler & running the daemon
 - [x] Pipeline 
 - [ ] User Manual - Printable for workshops
@@ -46,7 +46,7 @@ A web radio station can be supplied via URL in the config
 - [ ] Automated environment setup
 - [ ] Read file metadata 
 
-### Longshots
+### [Longshots](https://github.com/jmillerv/go-dj/milestone/3)
 - [ ] Plugins for consuming additional types of audio 
 - [ ] [Funkwhale API integration](https://docs.funkwhale.audio/api.html)
 
