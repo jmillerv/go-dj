@@ -27,17 +27,22 @@ func TestNewScheduler(t *testing.T) {
 			},
 			want: &want{
 				scheduler: &Scheduler{
-					Content: struct{ Programs []*Program }{Programs: []*Program{
-						{
-							Name:   "gettysburg10",
-							Source: "./static/gettysburg10.wav",
-							Timeslot: &Timeslot{
-								Begin: "11:00PM",
-								End:   "11:30PM",
+					Content: struct {
+						CheckInterval string
+						Programs      []*Program
+					}{
+						CheckInterval: "1m",
+						Programs: []*Program{
+							{
+								Name:   "gettysburg10",
+								Source: "./static/gettysburg10.wav",
+								Timeslot: &Timeslot{
+									Begin: "11:00PM",
+									End:   "11:30PM",
+								},
+								Type: MediaType("file"),
 							},
-							Type: MediaType("file"),
-						},
-					}},
+						}},
 				},
 			},
 			wantErr: false,
