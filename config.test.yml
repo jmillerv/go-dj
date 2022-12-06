@@ -3,5 +3,8 @@ content:
   Programs:
     - Name: "gettysburg10"
       Type: "file"
-      Timeslot: "afternoon"
       Source: "./static/gettysburg10.wav"
+      Timeslot:
+        Begin: "11:00PM"
+        End: "11:30PM"
+

@@ -8,7 +8,7 @@ import (
 type Program struct {
 	Name     string
 	Source   string
-	Timeslot Timeslot
+	Timeslot *Timeslot
 	Type     MediaType
 }
 

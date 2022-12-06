@@ -20,51 +20,69 @@ func TestProgram_GetMedia(t *testing.T) {
 			name: "Success: returns folder",
 			fields: fields{
 				program: &Program{
-					Name:     "David Rovics Folder",
-					Source:   "./static/david_rovics",
-					Timeslot: "early",
-					Type:     "folder",
+					Name:   "David Rovics Folder",
+					Source: "./static/david_rovics",
+					Timeslot: &Timeslot{
+						Begin: "11:00PM",
+						End:   "11:30PM",
+					},
+					Type: "folder",
 				},
 			},
 			want: (&Program{
-				Name:     "David Rovics Folder",
-				Source:   "./static/david_rovics",
-				Timeslot: "early",
-				Type:     "folder",
+				Name:   "David Rovics Folder",
+				Source: "./static/david_rovics",
+				Timeslot: &Timeslot{
+					Begin: "11:00PM",
+					End:   "11:30PM",
+				},
+				Type: "folder",
 			}).GetMedia(),
 		},
 		{
 			name: "Success: returns file",
 			fields: fields{
 				program: &Program{
-					Name:     "Piano Six Seconds",
-					Source:   "./static/piano_six_seconds.mp3",
-					Timeslot: "afternoon",
-					Type:     "file",
+					Name:   "Piano Six Seconds",
+					Source: "./static/piano_six_seconds.mp3",
+					Timeslot: &Timeslot{
+						Begin: "11:00PM",
+						End:   "11:30PM",
+					},
+					Type: "file",
 				},
 			},
 			want: (&Program{
-				Name:     "Piano Six Seconds",
-				Source:   "./static/piano_six_seconds.mp3",
-				Timeslot: "afternoon",
-				Type:     "file",
+				Name:   "Piano Six Seconds",
+				Source: "./static/piano_six_seconds.mp3",
+				Timeslot: &Timeslot{
+					Begin: "11:00PM",
+					End:   "11:30PM",
+				},
+				Type: "file",
 			}).GetMedia(),
 		},
 		{
 			name: "Success: returns web radio",
 			fields: fields{
 				program: &Program{
-					Name:     "Indie Pop Rocks",
-					Source:   "https://somafm.com/indiepop.pls",
-					Timeslot: "any",
-					Type:     "web_radio",
+					Name:   "Indie Pop Rocks",
+					Source: "https://somafm.com/indiepop.pls",
+					Timeslot: &Timeslot{
+						Begin: "11:00PM",
+						End:   "11:30PM",
+					},
+					Type: "web_radio",
 				},
 			},
 			want: (&Program{
-				Name:     "Indie Pop Rocks",
-				Source:   "https://somafm.com/indiepop.pls",
-				Timeslot: "any",
-				Type:     "web_radio",
+				Name:   "Indie Pop Rocks",
+				Source: "https://somafm.com/indiepop.pls",
+				Timeslot: &Timeslot{
+					Begin: "11:00PM",
+					End:   "11:30PM",
+				},
+				Type: "web_radio",
 			}).GetMedia(),
 		},
 		{
