@@ -5,6 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 	"os"
+	"time"
 )
 
 const (
@@ -37,7 +38,7 @@ func main() {
 						return
 					}
 					// run content normally
-					err = scheduler.Run()
+					err = scheduler.Run(time.Now())
 					if err != nil {
 						log.WithError(err).Error("unable to run go-dj")
 					}
