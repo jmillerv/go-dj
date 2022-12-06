@@ -38,7 +38,7 @@ A web radio station can be supplied via URL in the config
 - [x] Timeslots in config
 - [ ] Unit Tests
 
-### Extras
+### Nice To Have
 - [ ] UI for scheduler & running the daemon
 - [x] Pipeline 
 - [ ] User Manual - Printable for workshops
