@@ -10,8 +10,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 1
-          name: Install libasound2
-          run: apt install libasound2-dev
+          name: Install dependencies
+          run: apt install libasound2-dev libudev-dev pkg-config
 
       - name: Set up Go
         uses: actions/setup-go@v3
