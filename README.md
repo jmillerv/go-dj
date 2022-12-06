@@ -48,8 +48,6 @@ A web radio station can be supplied via URL in the config
 ### Longshots
 - [ ] Plugins for consuming additional types of audio 
 - [ ] [Funkwhale API integration](https://docs.funkwhale.audio/api.html)
-- [ ] Remove MPV dependency
-- [ ] Remove beep & oto dependency
 
 ## Config Setup
 
@@ -60,26 +58,17 @@ that the go-dj binary is stored in.
 
 config.yml
 ```
-version: 0.0.1
+
+version: 1.0.0
 content:
   Programs:
-    - Name:
-      Type:
-      Slot:
-      Source:
+    - Name: "gettysburg10"
+      Type: "file"
+      Source: "./static/gettysburg10.wav"
+      Timeslot:
+        Begin: "11:00PM"
+        End: "11:30PM"
 ```
-
-
-## Timeslots
-early: 5 AM - 7 AM  
-morning: 7 MA - 8 AM  
-breakfast: 8 AM - 11 AM  
-midmorning: 11 AM - 2 PM  
-afternoon: 2PM - 5 PM  
-commute: 5PM - 7 PM  
-evening: 7 PM - 11 PM  
-late: 11 PM - 2 AM  
-overnight: 2 AM - 5 AM  
 
 ## Files
 
@@ -89,11 +78,11 @@ but does have a path. When adding a LocalFile type to the programs be sure to us
 be cleaned up so that source can stand in for URL/Path/etc but I haven't abstracted that yet.
 
 ### Supported File Types
-At the moment go-dj only supports mp3 files for local and remote files.
+At the moment go-dj only supports local files.
 
 ## Types
 
-go-dj recognizes four types of content: `announcement`, `file`, `podcast`, `web_radio`
+go-dj recognizes four types of content: `announcement`, `file`, `folder`, `podcast`, `web_radio`
 
 The `announcement` type could be pulled from a file or a URL, but I wanted a distinct type for content interruptions.
 Since this would be hyper-local AM radio, I was thinking community service announcements, how to get involved, or donation requests.
