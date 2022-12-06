@@ -30,12 +30,12 @@ A web radio station can be supplied via URL in the config
 - [x] Web Radio Station Support
 - [x] Local File Support
 - [x] Randomized Programming
-- [ ] Scheduled Programming
+- [x] Scheduled Programming
 - [x] Local Folder support
 - [ ] Remote file support
 - [x] Stop signal
 - [x] WAV, OGG, FLAC Support
-- [ ] Timeslots in config
+- [x] Timeslots in config
 - [ ] Unit Tests
 
 ### Extras
