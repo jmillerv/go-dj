@@ -48,7 +48,7 @@ A web radio station can be supplied via URL in the config
 
 ### [Longshots](https://github.com/jmillerv/go-dj/milestone/3)
 - [ ] Plugins for consuming additional types of audio 
-- [ ] [Funkwhale API integration](https://docs.funkwhale.audio/api.html)
+- [ ] [Funkwhale/Subsonic API integration](https://docs.funkwhale.audio/api.html)
 
 ## Config Setup
 
