@@ -17,11 +17,12 @@ var Shuffled bool
 
 type Scheduler struct {
 	Content struct {
-		Programs []*Program
+		CheckInterval string
+		Programs      []*Program
 	}
 }
 
-func (s *Scheduler) Run(currentTime time.Time) error {
+func (s *Scheduler) Run() error {
 	log.Info("Starting Daemon")
 
 	log.Infof("Press ESC to quit")
@@ -31,37 +32,55 @@ func (s *Scheduler) Run(currentTime time.Time) error {
 	signal.Notify(sigchnl)
 	exitchnl := make(chan int)
 
-	// check content from scheduler and run through it
-	for _, p := range s.Content.Programs {
-		now := currentTime
-		log.Debugf("program %v", formatter.StructToIndentedString(p))
+	totalPrograms := len(s.Content.Programs)
+	programIndex := 0
 
-		if p.Timeslot.IsScheduledNow(now) {
-			log.Infof("getting media type: %v", p.Type)
-			content := p.GetMedia()
-			log.Debugf("media struct: %v", content)
-			err := content.Get() // retrieve contents from file
-			if err != nil {
-				return err
-			}
-			go func() {
-				for {
-					stop := <-sigchnl
-					s.Stop(stop, content)
+	// run operation in loop
+	for programIndex <= totalPrograms {
+		// check content from scheduler and run through it
+		for _, p := range s.Content.Programs {
+			now := time.Now()
+			log.Debugf("program %v", formatter.StructToIndentedString(p))
+
+			if p.Timeslot.IsScheduledNow(now) {
+				log.Infof("getting media type: %v", p.Type)
+				content := p.GetMedia()
+				log.Debugf("media struct: %v", content)
+				err := content.Get() // retrieve contents from file
+				if err != nil {
+					return err
 				}
-			}()
-			err = content.Play()
-			if err != nil {
-				return err
-			} // play will block until done
-		}
+				go func() {
+					for {
+						stop := <-sigchnl
+						s.Stop(stop, content)
+					}
+				}()
+				err = content.Play()
+				if err != nil {
+					return err
+				} // play will block until done
+			}
 
-		if !p.Timeslot.IsScheduledNow(now) {
-			log.WithField("IsScheduledNow", p.Timeslot.IsScheduledNow(now)).
-				WithField("current time", time.Now().
-					Format(time.Kitchen)).Infof("media not scheduled")
+			if !p.Timeslot.IsScheduledNow(now) {
+				log.WithField("IsScheduledNow", p.Timeslot.IsScheduledNow(now)).
+					WithField("current time", time.Now().
+						Format(time.Kitchen)).Infof("media not scheduled")
+			}
+			programIndex++ // increment index
+			if programIndex > totalPrograms {
+				programIndex = 0
+
+				// get the scheduled check interval from the scheduler
+				interval, err := time.ParseDuration(s.Content.CheckInterval)
+				if err != nil {
+					return err
+				}
+				// pause the loop
+				log.WithField("pause interval", s.Content.CheckInterval).Info("loop paused, will resume after pause interval")
+				time.Sleep(interval)
+			}
 		}
-		// TODO make these checks run in a loop and always check if programs should be playing
 	}
 
 	exitcode := <-exitchnl
