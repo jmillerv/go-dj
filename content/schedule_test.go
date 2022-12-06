@@ -8,7 +8,6 @@ import (
 )
 
 func TestNewScheduler(t *testing.T) {
-	t.Parallel()
 	type args struct {
 		file string
 	}
@@ -60,10 +59,9 @@ func TestNewScheduler(t *testing.T) {
 			wantErr: true,
 		},
 	}
+	// TODO make test pass when running in parallel and troubleshoot race condition.
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			got, err := NewScheduler(tt.args.file)
 			if err != nil && tt.wantErr {
 				assert.Error(t, err)

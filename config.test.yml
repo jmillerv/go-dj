@@ -5,6 +5,6 @@ content:
       Type: "file"
       Source: "./static/gettysburg10.wav"
       Timeslot:
-        - Begin: "11:00PM"
-        - End: "11:30PM"
+        Begin: "11:00PM"
+        End: "11:30PM"
 
