@@ -40,7 +40,7 @@ A web radio station can be supplied via URL in the config
 
 ### Extras
 - [ ] UI for scheduler & running the daemon
-- [ ] Pipeline 
+- [x] Pipeline 
 - [ ] User Manual - Printable for workshops
 - [ ] Docs
 
