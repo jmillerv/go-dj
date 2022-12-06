@@ -43,6 +43,7 @@ A web radio station can be supplied via URL in the config
 - [x] Pipeline 
 - [ ] User Manual - Printable for workshops
 - [ ] Docs
+- [ ] Automated environment setup
 
 ### Longshots
 - [ ] Plugins for consuming additional types of audio 
