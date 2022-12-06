@@ -44,6 +44,7 @@ A web radio station can be supplied via URL in the config
 - [ ] User Manual - Printable for workshops
 - [ ] Docs
 - [ ] Automated environment setup
+- [ ] Read file metadata 
 
 ### Longshots
 - [ ] Plugins for consuming additional types of audio 
