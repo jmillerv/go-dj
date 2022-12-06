@@ -23,7 +23,6 @@ func (testTime *testTime) Now() time.Time {
 }
 
 func TestTimes_IsScheduledNow(t *testing.T) {
-	t.Parallel()
 	type fields struct {
 		Current time.Time
 		Begin   string
@@ -60,9 +59,7 @@ func TestTimes_IsScheduledNow(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t1 *testing.T) {
-			t1.Parallel()
 			t := &Timeslot{
 				Begin: tt.fields.Begin,
 				End:   tt.fields.End,
