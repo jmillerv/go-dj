@@ -16,14 +16,13 @@ type testTime struct {
 }
 
 func (testTime *testTime) Now() time.Time {
-	tz, _ := time.LoadLocation("EST")
+	tz, _ := time.LoadLocation("Local")
 	now := time.Date(2022, 12, 05, 23, 27, 0, 0, tz)
 	log.Infof("testTime %v", now)
 	return now
 }
 
 func TestTimes_IsScheduledNow(t *testing.T) {
-	t.Parallel()
 	type fields struct {
 		Current time.Time
 		Begin   string
@@ -60,9 +59,7 @@ func TestTimes_IsScheduledNow(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t1 *testing.T) {
-			t1.Parallel()
 			t := &Timeslot{
 				Begin: tt.fields.Begin,
 				End:   tt.fields.End,

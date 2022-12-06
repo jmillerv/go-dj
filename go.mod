@@ -3,8 +3,8 @@ module github.com/jmillerv/go-dj
 go 1.19
 
 require (
+	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/faiface/beep v1.1.0
-	github.com/golang/mock v1.5.0
 	github.com/h2non/filetype v1.1.3
 	github.com/jmillerv/go-utilities v0.0.0-20211009175413-077cd5304cea
 	github.com/pkg/errors v0.9.1
@@ -15,7 +15,6 @@ require (
 )
 
 require (
-	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect

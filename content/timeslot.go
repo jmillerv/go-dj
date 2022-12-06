@@ -16,7 +16,7 @@ type Timeslot struct {
 // IsScheduledNow checks the current time and returns a bool if the time falls within the range
 func (t *Timeslot) IsScheduledNow(current time.Time) bool {
 	// get date info for string
-	date := time.Date(current.Year(), current.Month(), current.Day(), 0, 0, 0, 0, time.Local)
+	date := time.Date(current.Year(), current.Month(), current.Day(), 0, 0, 0, 0, current.Location())
 	year, month, day := date.Date()
 
 	// convert ints to dateString
@@ -28,8 +28,8 @@ func (t *Timeslot) IsScheduledNow(current time.Time) bool {
 	parsedEndTime, _ := dateparse.ParseAny(dateString + " " + t.End)
 
 	// matched parse time to fixed zone time
-	startTime := time.Date(parsedStartTime.Year(), parsedStartTime.Month(), parsedStartTime.Day(), parsedStartTime.Hour(), parsedStartTime.Minute(), parsedStartTime.Second(), parsedStartTime.Nanosecond(), time.Local)
-	endTime := time.Date(parsedEndTime.Year(), parsedEndTime.Month(), parsedEndTime.Day(), parsedEndTime.Hour(), parsedEndTime.Minute(), parsedEndTime.Second(), parsedEndTime.Nanosecond(), time.Local)
+	startTime := time.Date(parsedStartTime.Year(), parsedStartTime.Month(), parsedStartTime.Day(), parsedStartTime.Hour(), parsedStartTime.Minute(), parsedStartTime.Second(), parsedStartTime.Nanosecond(), current.Location())
+	endTime := time.Date(parsedEndTime.Year(), parsedEndTime.Month(), parsedEndTime.Day(), parsedEndTime.Hour(), parsedEndTime.Minute(), parsedEndTime.Second(), parsedEndTime.Nanosecond(), current.Location())
 
 	return inTimeSpan(startTime, endTime, current)
 }
