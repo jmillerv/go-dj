@@ -95,3 +95,8 @@ eventually add that functionality
 The `podcast` file is for podcasts with published RSS feeds. go-dj will parse the RSS and select from there.
 
 The `web_radio` file is able to take in a web radio address and play it through your go-dj.
+
+## Feature Requests 
+I've built this out for my purposes and released it to the public when I considered it feature complete. Suggestions are welcome for adding additional features and I will accept PRs that extend go-dj. 
+
+I will do paid development work on this project. Reach out at <insert_email>. Quotes start at $300. 
