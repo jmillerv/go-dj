@@ -97,6 +97,4 @@ The `podcast` file is for podcasts with published RSS feeds. go-dj will parse th
 The `web_radio` file is able to take in a web radio address and play it through your go-dj.
 
 ## Feature Requests 
-I've built this out for my purposes and released it to the public when I considered it feature complete. Suggestions are welcome for adding additional features and I will accept PRs that extend go-dj. 
-
-I will do paid development work on this project. Reach out at <insert_email>. Quotes start at $300. 
+I've built this out for my purposes and released it to the public when I considered it feature complete. Suggestions are welcome for adding additional features and I will accept PRs that extend go-dj. In addition, I will do paid development work on this project. Should you want a feature added, reach out at <insert_email>. Quotes start at $300 and the request must fall within the scope and vision of the project.
