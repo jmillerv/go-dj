@@ -35,7 +35,11 @@ func (p *Program) mediaFactory() Media {
 		log.Debugf("returning LocalFile: %v", formatter.StructToString(file))
 		return file
 	case *Podcast:
-		panic("implement me")
+		podcast := m.(*Podcast)
+		podcast.Name = p.Name
+		podcast.URL = p.Source
+		log.Debugf("returning podcast: %v", formatter.StructToString(podcast))
+		return podcast
 	case *WebRadio:
 		radio := m.(*WebRadio)
 		radio.Name = p.Name
