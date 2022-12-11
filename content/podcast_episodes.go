@@ -27,8 +27,8 @@ func (p *podcasts) getNewestEpisode() episode {
 	return newestEpisode
 }
 
-func (p *podcasts) getOldestEpisode() *episode {
-	var oldestEpisode *episode
+func (p *podcasts) getOldestEpisode() episode {
+	var oldestEpisode episode
 	var date *time.Time
 	// TODO if played, log that it's in the cache, and skip to the next episode
 	for _, ep := range p.Episodes {
@@ -43,8 +43,8 @@ func (p *podcasts) getOldestEpisode() *episode {
 	return oldestEpisode
 }
 
-func (p *podcasts) getRandomEpisode() *episode {
-	var randomEpisode *episode
+func (p *podcasts) getRandomEpisode() episode {
+	var randomEpisode episode
 	rand.Seed(time.Now().UnixNano())
 	item := p.Episodes[rand.Intn(len(p.Episodes))]
 	// TODO if played, log that it's in the cache, and skip to the next episode

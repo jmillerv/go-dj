@@ -86,11 +86,17 @@ At the moment go-dj only supports local files.
 go-dj recognizes four types of content `file`, `folder`, `podcast`, `web_radio`
 
 
+### File
 The `file` type is intended to be a local file; however, I see the use case for being able to pull files from URLs and will
 eventually add that functionality
 
+### Podcast
 The `podcast` file is for podcasts with published RSS feeds. go-dj will parse the RSS and select from there.
 
+The podcast type defaults to playing newest. If the oldest or random flags are passed, podcasts will play in those orders. 
+An improvement on this would be to allow this to be set on a per podcast basis in the config.yml. 
+
+### Web Radio
 The `web_radio` file is able to take in a web radio address and play it through your go-dj.
 
 ## Feature Requests 

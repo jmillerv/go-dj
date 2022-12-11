@@ -12,6 +12,11 @@ type Program struct {
 	Type     MediaType
 }
 
+var (
+	PodcastPlayOrderRandom   bool
+	PodcastPlayerOrderOldest bool
+)
+
 func (p *Program) GetMedia() Media {
 	media := p.mediaFactory()
 	return media
@@ -36,7 +41,14 @@ func (p *Program) mediaFactory() Media {
 		podcast := m.(*Podcast)
 		podcast.Name = p.Name
 		podcast.URL = p.Source
-		podcast.PlayOrder = "newest" // TODO: Add support for random, oldest, and set from PlayOrder from config.
+		podcast.PlayOrder = playOrderNewest // default
+		if PodcastPlayerOrderOldest == true {
+			podcast.PlayOrder = playOrderOldest
+		}
+		if PodcastPlayOrderRandom == true {
+			podcast.PlayOrder = playOrderRandom
+		}
+
 		log.Debugf("returning podcast: %v", formatter.StructToString(podcast))
 		return podcast
 	case *WebRadio:

@@ -50,6 +50,20 @@ func main() {
 						Hidden:      false,
 						Destination: &content.Shuffled,
 					},
+					cli.BoolFlag{
+						Name:        "pod-oldest",
+						Usage:       "podcasts will play starting with the oldest first",
+						Required:    false,
+						Hidden:      false,
+						Destination: &content.PodcastPlayerOrderOldest,
+					},
+					cli.BoolFlag{
+						Name:        "pod-random",
+						Usage:       "podcasts will play in a random order",
+						Required:    false,
+						Hidden:      false,
+						Destination: &content.PodcastPlayOrderRandom,
+					},
 				},
 			},
 		},
@@ -58,4 +72,10 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func init() {
+	content.Shuffled = false
+	content.PodcastPlayerOrderOldest = false
+	content.PodcastPlayOrderRandom = false
 }

@@ -20,7 +20,7 @@ type Podcast struct {
 	Name      string
 	URL       string
 	Player    streamPlayer
-	PlayOrder PlayOrder // options: newest, oldest, random
+	PlayOrder PlayOrder
 }
 
 type PlayOrder string
@@ -43,15 +43,12 @@ func (p *Podcast) Get() error {
 		ep = pods.getNewestEpisode()
 		break
 	case playOrderOldest:
-		log.Panic("implement me")
-		//ep = pods.getOldestEpisode()
+		ep = pods.getOldestEpisode()
 	case playOrderRandom:
-		log.Panic("implement me")
-		//ep = pods.getRandomEpisode()
+		ep = pods.getRandomEpisode()
 	}
 
 	// setup podcast stream
-	log.Infof("extension: %v", ep.EpExtension)
 	podcastStream.playerName = streamPlayerName
 	podcastStream.url = ep.EpURL
 	podcastStream.command = exec.Command(podcastStream.playerName, "-quiet", podcastStream.url)
