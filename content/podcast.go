@@ -27,13 +27,12 @@ type PlayOrder string
 
 // Get parses a podcast feed and sets the most recent episode as the Podcast content.
 func (p *Podcast) Get() error {
-	var ep *episode
+	var ep episode
 	parser := gofeed.NewParser()
 	feed, err := parser.ParseURL(p.URL)
 	if err != nil {
 		return err
 	}
-	log.Infof("test %v", feed.Description)
 	// traverse links
 	for _, item := range feed.Items {
 		pods.Episodes = append(pods.Episodes, item)
@@ -42,16 +41,20 @@ func (p *Podcast) Get() error {
 	switch p.PlayOrder {
 	case playOrderNewest:
 		ep = pods.getNewestEpisode()
+		break
 	case playOrderOldest:
-		ep = pods.getOldestEpisode()
+		log.Panic("implement me")
+		//ep = pods.getOldestEpisode()
 	case playOrderRandom:
-		ep = pods.getRandomEpisode()
+		log.Panic("implement me")
+		//ep = pods.getRandomEpisode()
 	}
 
 	// setup podcast stream
-	podcastStream.playerName = ep.EpExtension
+	log.Infof("extension: %v", ep.EpExtension)
+	podcastStream.playerName = streamPlayerName
 	podcastStream.url = ep.EpURL
-	podcastStream.command = exec.Command(podcastStream.playerName, "-quiet", "-playlist", podcastStream.url)
+	podcastStream.command = exec.Command(podcastStream.playerName, "-quiet", podcastStream.url)
 	podcastStream.in, err = podcastStream.command.StdinPipe()
 	if err != nil {
 		return errors.Wrap(err, "error creating standard pipe in")
@@ -70,12 +73,42 @@ func (p *Podcast) Get() error {
 
 // Play sends the audio to the output. It caches a played episode in the cache ofr later checks.
 func (p *Podcast) Play() error {
-	// play file
-	// cache played episode
-	panic("implement me")
+	log.Infof("streaming from %v ", p.URL)
+	if !p.Player.isPlaying {
+		err := p.Player.command.Start()
+		if err != nil {
+			return errors.Wrap(err, "error starting podcast streamPlayer")
+		}
+		p.Player.isPlaying = true
+		done := make(chan bool)
+		func() {
+			p.Player.pipeChan <- p.Player.out
+			done <- true
+		}()
+		<-done
+	}
+	return nil
 }
 
 func (p *Podcast) Stop() error {
 	log.Infof("Stopping stream from %v ", p.URL)
+	if p.Player.isPlaying {
+		p.Player.isPlaying = false
+		_, err := p.Player.in.Write([]byte("q"))
+		if err != nil {
+			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Write()")
+		}
+		err = p.Player.in.Close()
+		if err != nil {
+			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Close()")
+		}
+		err = p.Player.out.Close()
+		if err != nil {
+			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.out.Close()")
+		}
+		p.Player.command = nil
+
+		p.Player.url = ""
+	}
 	return nil
 }
