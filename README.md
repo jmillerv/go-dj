@@ -26,7 +26,7 @@ A web radio station can be supplied via URL in the config
 
 ## Roadmap
 ### [Feature Complete](https://github.com/jmillerv/go-dj/issues?q=is%3Aopen+is%3Aissue+milestone%3A%22Feature+Complete%22)
-- [ ] Podcast Support
+- [x] Podcast Support
 - [x] Web Radio Station Support
 - [x] Local File Support
 - [x] Randomized Programming
