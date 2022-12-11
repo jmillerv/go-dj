@@ -7,45 +7,40 @@ package content
 import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
-	"io"
 	"os/exec"
 )
 
-const player = "mpv"
+const streamPlayerName = "mpv"
 
 type WebRadio struct {
 	Name   string
 	URL    string
-	Player webRadioCommand
+	Player streamPlayer
 }
 
-type webRadioCommand struct {
-	playerName string
-	url        string
-	isPlaying  bool
-	command    *exec.Cmd
-	in         io.WriteCloser
-	out        io.ReadCloser
-	pipeChan   chan io.ReadCloser
-}
-
-var wrc webRadioCommand
+var webRadioStream streamPlayer
 
 func (w *WebRadio) Get() error {
 	var err error
-	wrc.playerName = player
-	wrc.url = w.URL
-	wrc.command = exec.Command(wrc.playerName, "-quiet", "-playlist", wrc.url)
-	wrc.in, err = wrc.command.StdinPipe()
+
+	// setup web radio stream
+	webRadioStream.playerName = streamPlayerName
+	webRadioStream.url = w.URL
+	webRadioStream.command = exec.Command(webRadioStream.playerName, "-quiet", "-playlist", webRadioStream.url)
+
+	webRadioStream.in, err = webRadioStream.command.StdinPipe()
 	if err != nil {
 		return errors.Wrap(err, "error creating standard pipe in")
 	}
-	wrc.out, err = wrc.command.StdoutPipe()
+
+	webRadioStream.out, err = webRadioStream.command.StdoutPipe()
 	if err != nil {
 		return errors.Wrap(err, "error creating standard pipe out")
 	}
-	wrc.isPlaying = false
-	w.Player = wrc
+
+	webRadioStream.isPlaying = false
+
+	w.Player = webRadioStream
 	return nil
 }
 
@@ -54,7 +49,7 @@ func (w *WebRadio) Play() error {
 	if !w.Player.isPlaying {
 		err := w.Player.command.Start()
 		if err != nil {
-			return errors.Wrap(err, "error starting web radio player")
+			return errors.Wrap(err, "error starting web radio streamPlayer")
 		}
 		w.Player.isPlaying = true
 		done := make(chan bool)
@@ -73,15 +68,15 @@ func (w *WebRadio) Stop() error {
 		w.Player.isPlaying = false
 		_, err := w.Player.in.Write([]byte("q"))
 		if err != nil {
-			log.WithError(err).Error("error stopping web radio player: w.Player.in.Write()")
+			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Write()")
 		}
 		err = w.Player.in.Close()
 		if err != nil {
-			log.WithError(err).Error("error stopping web radio player: w.Player.in.Close()")
+			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Close()")
 		}
 		err = w.Player.out.Close()
 		if err != nil {
-			log.WithError(err).Error("error stopping web radio player: w.Player.out.Close()")
+			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.out.Close()")
 		}
 		w.Player.command = nil
 

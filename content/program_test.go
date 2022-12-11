@@ -63,6 +63,21 @@ func TestProgram_GetMedia(t *testing.T) {
 			}).GetMedia(),
 		},
 		{
+			name: "Success: returns podcast",
+			fields: fields{
+				program: &Program{
+					Name:   "Tech Won't Save Us",
+					Source: "https://feeds.buzzsprout.com/1004689.rss",
+					Timeslot: &Timeslot{
+						Begin: "11:00PM",
+						End:   "11:30PM",
+					},
+					Type: "podcast",
+				},
+			},
+			want: nil,
+		},
+		{
 			name: "Success: returns web radio",
 			fields: fields{
 				program: &Program{

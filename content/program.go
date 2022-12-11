@@ -20,8 +20,6 @@ func (p *Program) GetMedia() Media {
 func (p *Program) mediaFactory() Media {
 	m := MediaTypeMap[p.Type]
 	switch m.(type) {
-	case *Announcement:
-		panic("implement me")
 	case *Folder:
 		folder := m.(*Folder)
 		folder.Name = p.Name
@@ -35,7 +33,12 @@ func (p *Program) mediaFactory() Media {
 		log.Debugf("returning LocalFile: %v", formatter.StructToString(file))
 		return file
 	case *Podcast:
-		panic("implement me")
+		podcast := m.(*Podcast)
+		podcast.Name = p.Name
+		podcast.URL = p.Source
+		podcast.PlayOrder = "newest" // TODO: Add support for random, oldest, and set from PlayOrder from config.
+		log.Debugf("returning podcast: %v", formatter.StructToString(podcast))
+		return podcast
 	case *WebRadio:
 		radio := m.(*WebRadio)
 		radio.Name = p.Name
