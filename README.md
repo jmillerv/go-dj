@@ -83,11 +83,8 @@ At the moment go-dj only supports local files.
 
 ## Types
 
-go-dj recognizes four types of content: `announcement`, `file`, `folder`, `podcast`, `web_radio`
+go-dj recognizes four types of content `file`, `folder`, `podcast`, `web_radio`
 
-The `announcement` type could be pulled from a file or a URL, but I wanted a distinct type for content interruptions.
-Since this would be hyper-local AM radio, I was thinking community service announcements, how to get involved, or donation requests.
-The intent is that the `announcement` struct will be treated with more leniency within the automation.
 
 The `file` type is intended to be a local file; however, I see the use case for being able to pull files from URLs and will
 eventually add that functionality
