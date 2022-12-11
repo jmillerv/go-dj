@@ -10,7 +10,7 @@ import (
 	"os/exec"
 )
 
-const webRadioPlayerName = "mpv"
+const streamPlayerName = "mpv"
 
 type WebRadio struct {
 	Name   string
@@ -24,18 +24,22 @@ func (w *WebRadio) Get() error {
 	var err error
 
 	// setup web radio stream
-	webRadioStream.playerName = webRadioPlayerName
+	webRadioStream.playerName = streamPlayerName
 	webRadioStream.url = w.URL
 	webRadioStream.command = exec.Command(webRadioStream.playerName, "-quiet", "-playlist", webRadioStream.url)
+
 	webRadioStream.in, err = webRadioStream.command.StdinPipe()
 	if err != nil {
 		return errors.Wrap(err, "error creating standard pipe in")
 	}
+
 	webRadioStream.out, err = webRadioStream.command.StdoutPipe()
 	if err != nil {
 		return errors.Wrap(err, "error creating standard pipe out")
 	}
+
 	webRadioStream.isPlaying = false
+
 	w.Player = webRadioStream
 	return nil
 }
@@ -45,7 +49,7 @@ func (w *WebRadio) Play() error {
 	if !w.Player.isPlaying {
 		err := w.Player.command.Start()
 		if err != nil {
-			return errors.Wrap(err, "error starting web radio webRadioPlayerName")
+			return errors.Wrap(err, "error starting web radio streamPlayer")
 		}
 		w.Player.isPlaying = true
 		done := make(chan bool)
@@ -64,15 +68,15 @@ func (w *WebRadio) Stop() error {
 		w.Player.isPlaying = false
 		_, err := w.Player.in.Write([]byte("q"))
 		if err != nil {
-			log.WithError(err).Error("error stopping web radio webRadioPlayerName: w.Player.in.Write()")
+			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Write()")
 		}
 		err = w.Player.in.Close()
 		if err != nil {
-			log.WithError(err).Error("error stopping web radio webRadioPlayerName: w.Player.in.Close()")
+			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Close()")
 		}
 		err = w.Player.out.Close()
 		if err != nil {
-			log.WithError(err).Error("error stopping web radio webRadioPlayerName: w.Player.out.Close()")
+			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.out.Close()")
 		}
 		w.Player.command = nil
 
