@@ -11,12 +11,13 @@ type podcasts struct {
 	// add podcast cache
 }
 
-func (p *podcasts) getNewestEpisode() *episode {
-	var newestEpisode *episode
+func (p *podcasts) getNewestEpisode() episode {
+	var newestEpisode episode
+	var date *time.Time
+	date = p.Episodes[0].PublishedParsed
 	for _, ep := range p.Episodes {
-		var date *time.Time
 		// TODO if played, log that it's in the cache, and skip to the next episode
-		if ep.PublishedParsed.After(*date) {
+		if ep.PublishedParsed.After(*date) || ep.PublishedParsed.Equal(*date) {
 			date = ep.PublishedParsed
 			newestEpisode.Item = ep
 			newestEpisode.EpURL = ep.Enclosures[0].URL
@@ -28,17 +29,17 @@ func (p *podcasts) getNewestEpisode() *episode {
 
 func (p *podcasts) getOldestEpisode() *episode {
 	var oldestEpisode *episode
+	var date *time.Time
 	// TODO if played, log that it's in the cache, and skip to the next episode
 	for _, ep := range p.Episodes {
-		var date *time.Time
-		if ep.PublishedParsed.Before(*date) {
+		date = p.Episodes[0].PublishedParsed
+		if ep.PublishedParsed.Before(*date) || ep.PublishedParsed.Equal(*date) {
 			date = ep.PublishedParsed
 			oldestEpisode.Item = ep
 			oldestEpisode.EpURL = ep.Enclosures[0].URL
 			oldestEpisode.EpExtension = ep.Enclosures[0].Type
 		}
 	}
-
 	return oldestEpisode
 }
 
