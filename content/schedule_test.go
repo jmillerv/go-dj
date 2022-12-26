@@ -28,10 +28,12 @@ func TestNewScheduler(t *testing.T) {
 			want: &want{
 				scheduler: &Scheduler{
 					Content: struct {
-						CheckInterval string
-						Programs      []*Program
+						PlayedPodcastTTL string
+						CheckInterval    string
+						Programs         []*Program
 					}{
-						CheckInterval: "1m",
+						PlayedPodcastTTL: "3h",
+						CheckInterval:    "1m",
 						Programs: []*Program{
 							{
 								Name:   "gettysburg10",
