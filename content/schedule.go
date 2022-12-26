@@ -17,6 +17,9 @@ var Shuffled bool
 
 type Scheduler struct {
 	Content struct {
+		// Expire time for played podcast cache
+		PlayedPodcastTTL string
+		// Duration between the loop pausing and checking the content against the schedule.
 		CheckInterval string
 		Programs      []*Program
 	}
@@ -24,8 +27,6 @@ type Scheduler struct {
 
 func (s *Scheduler) Run() error {
 	log.Info("Starting Daemon")
-
-	log.Infof("Press ESC to quit")
 
 	// setup signal listeners
 	sigchnl := make(chan os.Signal, 1)
@@ -142,15 +143,12 @@ func (s *Scheduler) Stop(signal os.Signal, media Media) {
 	}
 }
 
-//func getTimeSlot(t *time.Time) Timeslot {
-//	// if t between certain times return Timeslot
-//	return All
-//}
-
 func NewScheduler(file string) (*Scheduler, error) {
 	log.Info("Loading Config File from: ", file)
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile(file)
+	viper.SetDefault("CheckInterval", "10m")     // default Check Interval
+	viper.SetDefault("PlayedPodcastTTL", "730h") // default Cache TTL 730h is ~1 month
 	if err := viper.ReadInConfig(); err != nil {
 
 		log.WithField("file", file).WithError(err).Error("Failed to read in config file")
@@ -166,6 +164,7 @@ func NewScheduler(file string) (*Scheduler, error) {
 		return nil, errors.New("scheduler is empty")
 
 	}
+
 	log.Info("config loaded", formatter.StructToIndentedString(scheduler))
 	return scheduler, nil
 }

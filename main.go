@@ -1,10 +1,13 @@
 package main
 
 import (
+	"github.com/jmillerv/go-dj/cache"
 	"github.com/jmillerv/go-dj/content"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 	"os"
+	"time"
+	"zgo.at/zcache"
 )
 
 const (
@@ -28,6 +31,16 @@ func main() {
 					if err != nil {
 						log.WithError(err).Error("unable to run go-dj")
 					}
+					ttl, err := time.ParseDuration(scheduler.Content.PlayedPodcastTTL)
+					if err != nil {
+						log.WithError(err).Error("unable to parse played podcast ttl")
+					}
+					// create cache
+					cache.PodcastPlayedCache = zcache.New(ttl, ttl)
+
+					// hydrate podcast
+					content.HydratePodcastCache()
+
 					if content.Shuffled {
 						log.Info("playing shuffled content")
 						err = scheduler.Shuffle()

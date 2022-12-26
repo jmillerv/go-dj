@@ -1,26 +1,37 @@
 package content
 
 import (
+	"encoding/json"
+	"github.com/jmillerv/go-dj/cache"
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"os"
 	"os/exec"
+	"time"
+	"zgo.at/zcache"
 )
 
 const (
-	playOrderNewest PlayOrder = "newest"
-	playOrderOldest PlayOrder = "oldest"
-	playOrderRandom PlayOrder = "random"
+	playOrderNewest       PlayOrder = "newest"
+	playOrderOldest       PlayOrder = "oldest"
+	playOrderRandom       PlayOrder = "random"
+	defaultPodcastCache             = "podcastCache"
+	podcastCacheLocalFile           = "./cache/podcastCache.json"
+	localFileTTY                    = "72h"
 )
 
 var pods podcasts // holds the feed data for podcasts
 var podcastStream streamPlayer
+var podcastCache podcastCacheData
 
 type Podcast struct {
-	Name      string
-	URL       string
-	Player    streamPlayer
-	PlayOrder PlayOrder
+	Name        string
+	URL         string
+	Player      streamPlayer
+	PlayOrder   PlayOrder
+	EpisodeGuid string
+	TTL         time.Duration
 }
 
 type PlayOrder string
@@ -44,8 +55,14 @@ func (p *Podcast) Get() error {
 		break
 	case playOrderOldest:
 		ep = pods.getOldestEpisode()
+		break
 	case playOrderRandom:
 		ep = pods.getRandomEpisode()
+		break
+	}
+	// set guid for cache when played
+	if ep.Item != nil {
+		p.EpisodeGuid = ep.Item.GUID
 	}
 
 	// setup podcast stream
@@ -72,7 +89,19 @@ func (p *Podcast) Get() error {
 func (p *Podcast) Play() error {
 	log.Infof("streaming from %v ", p.URL)
 	if !p.Player.isPlaying {
-		err := p.Player.command.Start()
+		log.WithField("episode", p.EpisodeGuid).Info("setting podcast played cache")
+		cacheData, cacheHit := cache.PodcastPlayedCache.Get(defaultPodcastCache)
+		if cacheHit {
+			podcastCache = cacheData.(podcastCacheData)
+		}
+		if p.EpisodeGuid != "" {
+			podcastCache.Guids = append(podcastCache.Guids, p.EpisodeGuid)
+		}
+		err := p.setCache(&podcastCache)
+		if err != nil {
+			return err
+		}
+		err = p.Player.command.Start()
 		if err != nil {
 			return errors.Wrap(err, "error starting podcast streamPlayer")
 		}
@@ -108,4 +137,47 @@ func (p *Podcast) Stop() error {
 		p.Player.url = ""
 	}
 	return nil
+}
+
+// setCache updates the in memory cache and persists a local file
+func (p *Podcast) setCache(cacheData *podcastCacheData) error {
+	cache.PodcastPlayedCache.Set(defaultPodcastCache, cacheData, zcache.DefaultExpiration)
+	cacheData.TTY = localFileTTY
+	cacheData.CacheDate = time.Now() // This will keep the cache constantly refreshing every time an episode is played. // TODO improve solution
+	file, err := json.MarshalIndent(cacheData, "", " ")
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(podcastCacheLocalFile, file, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// HydratePodcastCache populates the default podcast cache with a local file
+func HydratePodcastCache() {
+	// check if file exists
+	file, err := os.ReadFile(podcastCacheLocalFile)
+	if errors.Is(err, os.ErrNotExist) {
+		// if file does not exist do not hydrate the cache
+		return
+	}
+	data := podcastCacheData{}
+	err = json.Unmarshal(file, &data)
+	if err != nil {
+		log.WithError(err).Error("HydratePodcastCache::failed to unmarshal podcast cache local file")
+		return
+	}
+	// check that TTY is within range of cacheDate
+	duration, err := time.ParseDuration(data.TTY)
+	if err != nil {
+		log.WithError(err).Error("HydratePodcastCache::failed to parse tty")
+		return
+	}
+	if !data.CacheDate.Before(data.CacheDate.Add(duration)) {
+		// if TTY is not within range, do not hydrate
+		return
+	}
+	cache.PodcastPlayedCache.Set(defaultPodcastCache, data, zcache.DefaultExpiration)
 }
