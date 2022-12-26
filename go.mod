@@ -13,6 +13,7 @@ require (
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/urfave/cli v1.22.3
+	zgo.at/zcache v1.2.0
 )
 
 require (
