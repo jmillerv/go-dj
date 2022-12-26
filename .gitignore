@@ -20,3 +20,4 @@ config.yml
 config.dev.yml
 static
 go-dj
+cache/podcastCache.json
