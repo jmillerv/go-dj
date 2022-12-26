@@ -48,7 +48,6 @@ func (p *Program) mediaFactory() Media {
 		if PodcastPlayOrderRandom == true {
 			podcast.PlayOrder = playOrderRandom
 		}
-
 		log.Debugf("returning podcast: %v", formatter.StructToString(podcast))
 		return podcast
 	case *WebRadio:
