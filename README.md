@@ -55,17 +55,6 @@ which has dependencies that may need to be installed depending on the system you
 MPEG 2.5 is not supported because of underlying go-mp3 dependency.
 
 
-## Supported Content
-
-### Local Files
-Local files are supported and the config assumes that they are located in the same directory as the deamon.
-
-### Local Folder
-Folders are also supported and make the same directory assumptions as local files.
-
-### Web Radio 
-A web radio station can be supplied via URL in the config
-
 ## Roadmaps
 ### [Feature Complete](https://github.com/jmillerv/go-dj/issues?q=is%3Aopen+is%3Aissue+milestone%3A%22Feature+Complete%22)
 - [x] Podcast Support
