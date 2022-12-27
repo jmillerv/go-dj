@@ -1,0 +1,45 @@
+version: 0.0.1
+content:
+  PlayedPodcastTTL: "1m" # defaults to a month
+  CheckInterval: "1m" # defaults to 1 minute
+  Programs:
+    - Name: "Indie Pop Rocks"
+      Type: "web_radio"
+      Source: "https://somafm.com/indiepop.pls"
+      Timeslot:
+        Begin: "12:00AM"
+        End: "12:00PM"
+    - Name: "Tech Won't Save Us"
+      Type: "podcast"
+      Timeslot:
+        Begin: "12:00 AM"
+        End: "11:59:00 PM"
+      Source: "https://feeds.buzzsprout.com/1004689.rss"
+    - Name: "Democracy Now!"
+      Type: "podcast"
+      Timeslot:
+        Begin: "12:00 AM"
+        End: "11:59:00 PM"
+      Source: "https://www.democracynow.org/podcast.xml"
+    - Name: "gettysburg10"
+      Type: "file"
+      Timeslot:
+        Begin: "3:05:00 PM"
+        End: "10:00:00 PM"
+      Source: "./static/gettysburg10.wav"
+    - Name: "Piano Six Seconds"
+      Type: "file"
+      Timeslot:
+        Begin: "12:00:00 AM"
+        End: "11:59:00 PM"
+      Source: "./static/piano_six_seconds.mp3"
+    - Name: "exile (feat. Bon Iver)"
+      Type: "file"
+      Timeslot:
+        Begin: "9:54:00 PM"
+        End: "9:58:00 PM"
+      Source: "./static/04 exile (feat. bon iver).mp3"
+    - Name: "Taylor Swift Folder"
+      Type: "folder"
+      Timeslot: "afternoon"
+      Source: "./static/taylor_swift"
