@@ -141,6 +141,3 @@ streams don't work.
 
 ## Feature Requests 
 I've built this out for my specific use case and released it to the public when I considered it feature complete. Suggestions are welcome for adding additional features.
-
-### Paid Development
-In addition, I will do paid development work on this project. Should you want a feature added, reach out at <insert_email>. Quotes start at $300 and the request must fall within the scope and vision of the project.
