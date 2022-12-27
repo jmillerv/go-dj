@@ -68,9 +68,11 @@ MPEG 2.5 is not supported because of underlying go-mp3 dependency.
 - [x] Timeslots in config
 - [x] Played podcast cache
 
+### Future Releases
+Check the milestones for what is planned and when it's expected to release. 
 
 ### [Nice To Have](https://github.com/jmillerv/go-dj/milestone/2)
-After bugs, this milestone is where I will be focusing my efforts.  
+This is the milestone where I throw tickets that I may pull into current release milestones or work on as quick, one offs.  
 
 ### [Longshots](https://github.com/jmillerv/go-dj/milestone/3)
 This is board is where neat ideas get thrown, but realistically won't be implemented anytime soon. 
