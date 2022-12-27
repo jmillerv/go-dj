@@ -4,6 +4,8 @@ daemon for automating audio programming
 ## Usage
 This code was developed for automating content for an AM radio station; however, it can be installed on any Linux device with an audio output.
 
+For the first time setup, I'd recommend checking out this [doc](https://github.com/jmillerv/go-dj/blob/main/docs/first_time_setup.md)
+
 ```azure
 NAME:
 Go DJ - Daemon that schedules audio programming content
