@@ -1,7 +1,7 @@
 # Running go-dj on a fresh machine
 
 These instructions come from getting this working on a fresh install of [DietPi]() running on a [Raspberry Pi 3 B+]() There
-is an existing ticket to automate this process for ease of use.
+is an [existing issue](https://github.com/jmillerv/go-dj/issues/26) to automate this process for ease of use.
 
 
 ## Install Go
