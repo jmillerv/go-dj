@@ -152,6 +152,9 @@ the config.yml.
 ### Web Radio
 The `web_radio` file is able to take in a web radio address and play it through your go-dj.
 
+**Note** thus far only .pls streams are provably working. An outstanding [issue](https://github.com/jmillerv/go-dj/issues/37) exists to dig into why some other 
+streams don't work. 
+
 ## Feature Requests 
 I've built this out for my specific use case and released it to the public when I considered it feature complete. Suggestions are welcome for adding additional features.
 
