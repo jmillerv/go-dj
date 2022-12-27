@@ -78,20 +78,13 @@ A web radio station can be supplied via URL in the config
 - [x] WAV, OGG, FLAC Support
 - [x] Timeslots in config
 - [x] Played podcast cache
-- [ ] Unit Tests
+
 
 ### [Nice To Have](https://github.com/jmillerv/go-dj/milestone/2)
-- [ ] UI for scheduler & running the daemon
-- [x] Pipeline 
-- [ ] User Manual - Printable for workshops
-- [ ] Browsable Documentation 
-- [ ] Automated environment setup
-- [ ] Read file metadata 
-- [ ] Remote file support
+After bugs, this milestone is where I will be focusing my efforts.  
 
 ### [Longshots](https://github.com/jmillerv/go-dj/milestone/3)
-- [ ] Plugins for consuming additional types of audio 
-- [ ] [Funkwhale/Subsonic API integration](https://docs.funkwhale.audio/api.html)
+This is board is where neat ideas get thrown, but realistically won't be implemented anytime soon. 
 
 ## Config Setup
 
