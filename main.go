@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	configFile = "config.dev.yml"
+	configFile = "config.yml"
 )
 
 func main() {
