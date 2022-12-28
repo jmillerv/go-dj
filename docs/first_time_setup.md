@@ -61,7 +61,7 @@ Should your SBC go down, you'll likely not want to have to reboot the daemon you
 1. open crontab
 `crontab -e`
 2. add command to file 
-`@rebott cd ~/dev/go && ./go-dj s`
+`@reboot cd ~/dev/go && ./go-dj s`
 
 ## Killing the program
 ### Kill Signal
