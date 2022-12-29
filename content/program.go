@@ -17,6 +17,10 @@ var (
 	PodcastPlayerOrderOldest bool
 )
 
+func (p *Program) getMediaType() MediaType {
+	return p.Type
+}
+
 func (p *Program) GetMedia() Media {
 	media := p.mediaFactory()
 	return media

@@ -2,6 +2,7 @@ package content
 
 import (
 	"fmt"
+	"github.com/araddon/dateparse"
 	"github.com/jmillerv/go-utilities/formatter"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -9,6 +10,7 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 )
@@ -57,6 +59,12 @@ func (s *Scheduler) Run() error {
 						s.Stop(stop, content)
 					}
 				}()
+				if p.getMediaType() == webRadioContent {
+					go func() {
+						duration := getDurationtoEndTime(p.Timeslot.End) // might cause an index out of range issue
+						stopCountDown(content, duration)
+					}()
+				}
 				err = content.Play()
 				if err != nil {
 					return err
@@ -143,6 +151,10 @@ func (s *Scheduler) Stop(signal os.Signal, media Media) {
 	}
 }
 
+func (s *Scheduler) getNextProgram(index int) *Program {
+	return s.Content.Programs[index]
+}
+
 func NewScheduler(file string) (*Scheduler, error) {
 	log.Info("Loading Config File from: ", file)
 	viper.SetConfigType("yaml")
@@ -167,4 +179,43 @@ func NewScheduler(file string) (*Scheduler, error) {
 
 	log.Info("config loaded", formatter.StructToIndentedString(scheduler))
 	return scheduler, nil
+}
+
+// stopCountDown takes in a Media and duration and starts a ticker to stop the playing content
+func stopCountDown(content Media, period time.Duration) {
+	t := time.NewTicker(period)
+	defer t.Stop()
+	for {
+		select {
+		case <-t.C: // call content.Stop
+			err := content.Stop()
+			if err != nil {
+				log.WithError(err).Error("stopCountDown:: error stopping content")
+			}
+		}
+	}
+}
+
+// getDurationtoEndTime determines how much time in seconds needs to pass before the next program starts.
+// TODO look at this function and timeslot.go's IsScheduleNow() and attempt to refactor to remove duplicate code.
+func getDurationtoEndTime(currentProgramEnd string) time.Duration {
+	current := time.Now()
+	// get date info for string
+	date := time.Date(current.Year(), current.Month(), current.Day(), 0, 0, 0, 0, current.Location())
+	year, month, day := date.Date()
+
+	// convert ints to dateString
+	dateString := strconv.Itoa(year) + "-" + strconv.Itoa(int(month)) + "-" + strconv.Itoa(day)
+
+	// parse the date and the config time
+	// parsed times are returned in 2022-12-05 15:05:00 +0000 UTC format which doesn't appear to have a const in the time package
+	parsedProgramEnd, _ := dateparse.ParseAny(dateString + " " + currentProgramEnd)
+
+	// matched parse time to fixed zone time
+	currentProgramEndTime := time.Date(parsedProgramEnd.Year(), parsedProgramEnd.Month(), parsedProgramEnd.Day(), parsedProgramEnd.Hour(), parsedProgramEnd.Minute(), parsedProgramEnd.Second(), parsedProgramEnd.Nanosecond(), current.Location())
+
+	tz, _ := time.LoadLocation("UTC")
+
+	duration := currentProgramEndTime.In(tz).Sub(current.In(tz))
+	return duration
 }
