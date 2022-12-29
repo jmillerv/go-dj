@@ -77,6 +77,12 @@ func (s *Scheduler) Run() error {
 				if err != nil {
 					return err
 				}
+				go func() {
+					for {
+						stop := <-sigchnl
+						s.Stop(stop, nil) // passing nil because there is no media to stop.
+					}
+				}()
 				// pause the loop
 				log.WithField("pause interval", s.Content.CheckInterval).Info("loop paused, will resume after pause interval")
 				time.Sleep(interval)
@@ -131,13 +137,19 @@ func (s *Scheduler) Shuffle() error {
 func (s *Scheduler) Stop(signal os.Signal, media Media) {
 	if signal == syscall.SIGTERM {
 		log.Info("Got kill signal. ")
-		media.Stop()
+		if media != nil {
+			media.Stop()
+		}
 		log.Info("Program will terminate now.")
 		os.Exit(0)
 	} else if signal == syscall.SIGINT {
-		media.Stop()
+		if media != nil {
+			media.Stop()
+		}
 		log.Info("Got CTRL+C signal")
-		media.Stop()
+		if media != nil {
+			media.Stop()
+		}
 		fmt.Println("Closing.")
 		os.Exit(0)
 	}
