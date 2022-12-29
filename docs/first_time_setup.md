@@ -1,6 +1,6 @@
 # Running go-dj on a fresh machine
 
-These instructions come from getting this working on a fresh install of [DietPi]() running on a [Raspberry Pi 3 B+]() There
+These instructions come from getting this working on a fresh install of [DietPi](https://dietpi.com/) running on a [Raspberry Pi 3 B+]() There
 is an [existing issue](https://github.com/jmillerv/go-dj/issues/26) to automate this process for ease of use.
 
 
@@ -61,7 +61,7 @@ Should your SBC go down, you'll likely not want to have to reboot the daemon you
 1. open crontab
 `crontab -e`
 2. add command to file 
-`@rebott cd ~/dev/go && ./go-dj s`
+`@reboot cd ~/dev/go && ./go-dj s`
 
 ## Killing the program
 ### Kill Signal
