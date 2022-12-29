@@ -1,7 +1,6 @@
-package content_test
+package content
 
 import (
-	. "github.com/jmillerv/go-dj/content"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -85,6 +84,28 @@ func TestNewScheduler(t *testing.T) {
 				return
 			}
 			assert.ObjectsAreEqual(tt.want.scheduler, got)
+		})
+	}
+}
+
+func Test_getDurationBetweenPrograms(t *testing.T) {
+	type args struct {
+		endTime string
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "Success: Returns Correct Duration",
+			args: args{
+				endTime: "9:30PM",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			log.Info(getDurationToEndTime(tt.args.endTime))
 		})
 	}
 }
