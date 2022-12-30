@@ -66,9 +66,9 @@ func (s *Scheduler) Run() error {
 					}
 				}()
 
-				// if p.getMediaType is webRadioContent call start a timer and stop content from inside a go routine
-				// because the stream will block until done, it behaves differently from other content.
-				if p.getMediaType() == webRadioContent && scheduled {
+				// if p.getMediaType is webRadioContent or podcastContent start a timer and stop content from inside a go routine
+				// because these are streams rather than files they behave differently from local content.
+				if p.getMediaType() == webRadioContent || p.getMediaType() == podcastContent && scheduled {
 					go func() {
 						duration := getDurationToEndTime(p.Timeslot.End) // might cause an index out of range issue
 						stopCountDown(content, duration, &wg)
@@ -82,7 +82,7 @@ func (s *Scheduler) Run() error {
 						} // play will block until done
 					}()
 				} else {
-					err = content.Play()
+					err = content.Play() // play will block until done
 					if err != nil {
 						return err
 					}
@@ -226,9 +226,21 @@ func stopCountDown(content Media, period time.Duration, wg *sync.WaitGroup) {
 			if err != nil {
 				log.WithError(err).Error("stopCountDown::error stopping content")
 			}
-			// only send a wg.Done() signal if the web radio has stopped playing.
-			if !content.(*WebRadio).Player.isPlaying {
-				wg.Done()
+			// typecast content as WebRadio
+			webRadio, ok := content.(*WebRadio)
+			if ok {
+				// only send a wg.Done() signal if the web radio has stopped playing.
+				if !webRadio.Player.isPlaying {
+					wg.Done()
+				}
+			}
+			// typecast content as Podcast
+			podcast, ok := content.(*Podcast)
+			if ok {
+				// only send a wg.Done() signal if the podcast has stopped playing.
+				if !podcast.Player.isPlaying {
+					wg.Done()
+				}
 			}
 			log.Info("content stopped")
 			return
