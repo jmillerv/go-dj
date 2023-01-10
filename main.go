@@ -84,7 +84,7 @@ func main() {
 				Name:      "clear-cache",
 				Aliases:   []string{"clear"},
 				Usage:     "./go-dj clear-cache",
-				UsageText: "deletes the in memory and locally save cache",
+				UsageText: "deletes the in memory and locally saved podcast cache",
 				Action: func(c *cli.Context) {
 					log.Info("clearing cache")
 					scheduler, err := content.NewScheduler(configFile)
@@ -115,5 +115,4 @@ func init() {
 	content.Shuffled = false
 	content.PodcastPlayerOrderOldest = false
 	content.PodcastPlayOrderRandom = false
-	content.UseCache = true
 }
