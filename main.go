@@ -1,12 +1,13 @@
 package main
 
 import (
+	"os"
+	"time"
+
 	"github.com/jmillerv/go-dj/cache"
 	"github.com/jmillerv/go-dj/content"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
-	"os"
-	"time"
 	"zgo.at/zcache"
 )
 
@@ -79,6 +80,29 @@ func main() {
 					},
 				},
 			},
+			{
+				Name:      "clear-cache",
+				Aliases:   []string{"clear"},
+				Usage:     "./go-dj clear-cache",
+				UsageText: "deletes the in memory and locally save cache",
+				Action: func(c *cli.Context) {
+					log.Info("clearing cache")
+					scheduler, err := content.NewScheduler(configFile)
+					ttl, err := time.ParseDuration(scheduler.Content.PlayedPodcastTTL)
+					if err != nil {
+						log.WithError(err).Error("unable to parse played podcast ttl")
+					}
+					// create cache
+					cache.PodcastPlayedCache = zcache.New(ttl, ttl)
+
+					// hydrate podcast
+					content.HydratePodcastCache()
+					err = cache.ClearPodcastPlayedCache()
+					if err != nil {
+						log.WithError(err).Error("unable to clear podcast played cache")
+					}
+				},
+			},
 		},
 		Author: "Jeremiah Miller",
 	}
@@ -91,4 +115,5 @@ func init() {
 	content.Shuffled = false
 	content.PodcastPlayerOrderOldest = false
 	content.PodcastPlayOrderRandom = false
+	content.UseCache = true
 }
