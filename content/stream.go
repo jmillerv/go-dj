@@ -3,6 +3,7 @@ package content
 import (
 	"io"
 	"os/exec"
+	"time"
 )
 
 type streamPlayer struct {
@@ -13,4 +14,9 @@ type streamPlayer struct {
 	in         io.WriteCloser
 	out        io.ReadCloser
 	pipeChan   chan io.ReadCloser
+	duration   time.Duration
+}
+
+func (s *streamPlayer) setDuration(duration string) {
+	s.duration, _ = time.ParseDuration(duration)
 }

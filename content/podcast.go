@@ -2,6 +2,7 @@ package content
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
 	"time"
@@ -14,12 +15,13 @@ import (
 )
 
 const (
-	playOrderNewest       PlayOrder = "newest"
-	playOrderOldest       PlayOrder = "oldest"
-	playOrderRandom       PlayOrder = "random"
-	defaultPodcastCache             = "podcastCache"
-	podcastCacheLocalFile           = "./cache/podcastCache.json"
-	localFileTTY                    = "72h"
+	playOrderNewest            PlayOrder = "newest"
+	playOrderOldest            PlayOrder = "oldest"
+	playOrderRandom            PlayOrder = "random"
+	defaultPodcastCache                  = "podcastCache"
+	podcastCacheLocalFile                = "./cache/podcastCache.json"
+	localFileTTY                         = "72h"
+	defaultPodcastPlayDuration           = "1h"
 )
 
 var pods podcasts // holds the feed data for podcasts
@@ -32,7 +34,7 @@ type Podcast struct {
 	Player      streamPlayer
 	PlayOrder   PlayOrder
 	EpisodeGuid string
-	TTL         time.Duration
+	TTL         time.Duration // cache expiration time
 }
 
 type PlayOrder string
@@ -79,6 +81,23 @@ func (p *Podcast) Get() error {
 		return errors.Wrap(err, "error creating standard pipe out")
 	}
 
+	// get podcast duration
+	if ep.EpURL != "" {
+		podcastStream.duration, err = time.ParseDuration(fmt.Sprintf("%ss", ep.Item.ITunesExt.Duration))
+		if err != nil {
+			log.Infof("error parsing duration, setting default duration")
+			podcastStream.setDuration(defaultPodcastPlayDuration)
+			log.WithError(err).Errorf("error parsing duration %s", ep.Item.ITunesExt.Duration)
+		}
+	} else {
+		log.Infof("podcast lacks duration, setting default duration")
+		podcastStream.setDuration(defaultPodcastPlayDuration)
+		if err != nil {
+			return errors.Wrap(err, "error parsing duration")
+		}
+	}
+
+	// set isPlaying to false
 	podcastStream.isPlaying = false
 
 	p.Player = podcastStream
@@ -104,7 +123,7 @@ func (p *Podcast) Play() error {
 		}
 		err = p.Player.command.Start()
 		if err != nil {
-			return errors.Wrap(err, "error starting podcast streamPlayer")
+			return errors.Wrap(err, "podcast.Play::error starting podcast streamPlayer")
 		}
 		p.Player.isPlaying = true
 		done := make(chan bool)
@@ -118,20 +137,20 @@ func (p *Podcast) Play() error {
 }
 
 func (p *Podcast) Stop() error {
-	log.Infof("Stopping stream from %v ", p.URL)
+	log.Infof("poadcast.Stop::Stopping stream from %v ", p.URL)
 	if p.Player.isPlaying {
 		p.Player.isPlaying = false
 		_, err := p.Player.in.Write([]byte("q"))
 		if err != nil {
-			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Write()")
+			log.WithError(err).Errorf("podcast.Stop::error stopping %s: w.Player.in.Write()", p.Player.playerName)
 		}
 		err = p.Player.in.Close()
 		if err != nil {
-			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Close()")
+			log.WithError(err).Errorf("podcast.Stop::error stopping %s: w.Player.in.Write()", p.Player.playerName)
 		}
 		err = p.Player.out.Close()
 		if err != nil {
-			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.out.Close()")
+			log.WithError(err).Errorf("podcast.Stop::error stopping %s: w.Player.in.Write()", p.Player.playerName)
 		}
 		p.Player.command = nil
 

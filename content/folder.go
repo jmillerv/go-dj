@@ -3,8 +3,9 @@ package content
 import (
 	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // The folder structure exists because I didn't want to load an entire folder's worth
@@ -42,7 +43,7 @@ func (f *Folder) Play() error {
 }
 
 func (f *Folder) Stop() error {
-	log.Infof("Stopping stream from %v ", f.Path)
+	log.Infof("folder.Stop::Stopping stream from %v ", f.Path)
 	return nil
 }
 

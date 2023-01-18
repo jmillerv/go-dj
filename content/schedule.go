@@ -2,11 +2,6 @@ package content
 
 import (
 	"fmt"
-	"github.com/araddon/dateparse"
-	"github.com/jmillerv/go-utilities/formatter"
-	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -14,6 +9,12 @@ import (
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/araddon/dateparse"
+	"github.com/jmillerv/go-utilities/formatter"
+	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 var Shuffled bool
@@ -50,7 +51,7 @@ func (s *Scheduler) Run() error {
 			// if content is scheduled, retrieve and play
 			scheduled := p.Timeslot.IsScheduledNow(now)
 			if scheduled {
-				log.Infof("getting media type: %v", p.Type)
+				log.Infof("scheduler.Run::getting media type: %v", p.Type)
 				content := p.GetMedia()
 				log.Debugf("media struct: %v", content)
 				err := content.Get() // retrieve contents from file
@@ -66,9 +67,9 @@ func (s *Scheduler) Run() error {
 					}
 				}()
 
-				// if p.getMediaType is webRadioContent call start a timer and stop content from inside a go routine
-				// because the stream will block until done, it behaves differently from other content.
-				if p.getMediaType() == webRadioContent && scheduled {
+				// if p.getMediaType is webRadioContent or podcastContent start a timer and stop content from inside a go routine
+				// because these are streams rather than files they behave differently from local content.
+				if p.getMediaType() == webRadioContent {
 					go func() {
 						duration := getDurationToEndTime(p.Timeslot.End) // might cause an index out of range issue
 						stopCountDown(content, duration, &wg)
@@ -81,8 +82,22 @@ func (s *Scheduler) Run() error {
 							log.WithError(err).Error("Run::content.Play")
 						} // play will block until done
 					}()
+				} else if p.getMediaType() == podcastContent {
+					go func() {
+						podcast := content.(*Podcast)
+						log.Infof("podcast player duration %s", podcast.Player.duration)
+						stopCountDown(content, podcast.Player.duration, &wg)
+					}()
+					go func() {
+						log.Info("playing podcast inside of a go routine")
+						wg.Add(1)
+						err = content.Play()
+						if err != nil {
+							log.WithError(err).Error("Run::content.Play")
+						} // play will block until done
+					}()
 				} else {
-					err = content.Play()
+					err = content.Play() // play will block until done
 					if err != nil {
 						return err
 					}
@@ -222,13 +237,25 @@ func stopCountDown(content Media, period time.Duration, wg *sync.WaitGroup) {
 	for {
 		select {
 		case <-t.C: // call content.Stop
+			log.Info("stopping content")
 			err := content.Stop()
 			if err != nil {
 				log.WithError(err).Error("stopCountDown::error stopping content")
 			}
-			// only send a wg.Done() signal if the web radio has stopped playing.
-			if !content.(*WebRadio).Player.isPlaying {
-				wg.Done()
+			// typecast content as WebRadio
+			webRadio, ok := content.(*WebRadio)
+			if ok {
+				// only send a wg.Done() signal if the web radio has stopped playing.
+				if !webRadio.Player.isPlaying {
+					wg.Done()
+				}
+			}
+			// typecast content as Podcast
+			podcast, ok := content.(*Podcast)
+			if ok {
+				if !podcast.Player.isPlaying {
+					wg.Done()
+				}
 			}
 			log.Info("content stopped")
 			return

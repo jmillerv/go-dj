@@ -1,10 +1,11 @@
 package content
 
 import (
-	"github.com/jmillerv/go-dj/cache"
-	"github.com/mmcdole/gofeed"
 	"math/rand"
 	"time"
+
+	"github.com/jmillerv/go-dj/cache"
+	"github.com/mmcdole/gofeed"
 )
 
 type podcasts struct {

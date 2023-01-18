@@ -5,9 +5,10 @@ package content
 // inspiration for this solution came from https://github.com/jcheng8/goradio
 
 import (
+	"os/exec"
+
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
-	"os/exec"
 )
 
 const streamPlayerName = "mpv"
@@ -63,7 +64,7 @@ func (w *WebRadio) Play() error {
 }
 
 func (w *WebRadio) Stop() error {
-	log.Infof("Stopping stream from %v ", w.URL)
+	log.Infof("webradio.Stop::Stopping stream from %v ", w.URL)
 	if w.Player.isPlaying {
 		w.Player.isPlaying = false
 		_, err := w.Player.in.Write([]byte("q"))

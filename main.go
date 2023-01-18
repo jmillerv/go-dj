@@ -30,7 +30,7 @@ func main() {
 					log.Info("creating schedule from config")
 					scheduler, err := content.NewScheduler(configFile)
 					if err != nil {
-						log.WithError(err).Error("unable to run go-dj")
+						log.WithError(err).Error("content.NewScheduler::unable to run go-dj")
 					}
 					ttl, err := time.ParseDuration(scheduler.Content.PlayedPodcastTTL)
 					if err != nil {
@@ -46,14 +46,14 @@ func main() {
 						log.Info("playing shuffled content")
 						err = scheduler.Shuffle()
 						if err != nil {
-							log.WithError(err).Error("unable to run go-dj")
+							log.WithError(err).Error("scheduler.Shuffle::unable to run go-dj")
 						}
 						return
 					}
 					// run content normally
 					err = scheduler.Run()
 					if err != nil {
-						log.WithError(err).Error("unable to run go-dj")
+						log.WithError(err).Error("scheduler.Run::unable to run go-dj")
 					}
 				},
 				Flags: []cli.Flag{
