@@ -21,7 +21,7 @@ const (
 	defaultPodcastCache                  = "podcastCache"
 	podcastCacheLocalFile                = "./cache/podcastCache.json"
 	localFileTTY                         = "72h"
-	defaultPodcastPlayDuration           = "120s"
+	defaultPodcastPlayDuration           = "1h"
 )
 
 var pods podcasts // holds the feed data for podcasts
