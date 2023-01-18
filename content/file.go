@@ -3,6 +3,12 @@ package content
 import (
 	"errors"
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
+
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/flac"
 	"github.com/faiface/beep/mp3"
@@ -11,11 +17,6 @@ import (
 	"github.com/faiface/beep/wav"
 	"github.com/h2non/filetype"
 	log "github.com/sirupsen/logrus"
-	"io"
-	"os"
-	"path/filepath"
-	"strings"
-	"time"
 )
 
 const (
@@ -82,7 +83,7 @@ func (l *LocalFile) Play() error {
 }
 
 func (l *LocalFile) Stop() error {
-	log.Infof("Stopping stream from %v ", l.Path)
+	log.Infof("file.Stop::Stopping stream from %v ", l.Path)
 	return nil
 }
 
