@@ -82,6 +82,9 @@ This is board is where neat ideas get thrown, but realistically won't be impleme
 go-dj consumes a file called `config.yml` the daemon searches for this file in the root of the directory
 that the go-dj binary is stored in.
 
+You can set an alternative file by setting the `GODJ_CONFIG_OVERRIDE` environment variable. If this is set, it will use 
+the file named in the variable. More useful for development than production, IMO. 
+
 ### Config Example
 
 config.yml

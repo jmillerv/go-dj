@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	configFile = "config.yml"
+	configFile      = "config.yml"
+	config_override = "GODJ_CONFIG_OVERRIDE"
 )
 
 func main() {
@@ -27,11 +28,19 @@ func main() {
 				Usage:     "start",
 				UsageText: "starts the daemon from the config",
 				Action: func(c *cli.Context) {
+					var config string
 					log.Info("creating schedule from config")
-					scheduler, err := content.NewScheduler(configFile)
+					if os.Getenv(config_override) != "" {
+						config = os.Getenv(config_override)
+					} else {
+						config = configFile
+					}
+
+					scheduler, err := content.NewScheduler(config)
 					if err != nil {
 						log.WithError(err).Error("content.NewScheduler::unable to run go-dj")
 					}
+
 					ttl, err := time.ParseDuration(scheduler.Content.PlayedPodcastTTL)
 					if err != nil {
 						log.WithError(err).Error("unable to parse played podcast ttl")
