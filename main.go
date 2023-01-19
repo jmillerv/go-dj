@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"time"
 
@@ -14,6 +15,7 @@ import (
 const (
 	configFile      = "config.yml"
 	config_override = "GODJ_CONFIG_OVERRIDE"
+	logFile         = "/tmp/godj.log"
 )
 
 func main() {
@@ -120,8 +122,29 @@ func main() {
 	}
 }
 
+// init sets global variables
 func init() {
 	content.Shuffled = false
 	content.PodcastPlayerOrderOldest = false
 	content.PodcastPlayOrderRandom = false
+	initLogger()
+}
+
+// initLogger creates the multiwriter, determines the log format for each destination, and sets the logfile location.
+// at a later stage, it may be desirable to have different formats for standard out vs the log file. An example of how to do that can be found
+// here https://github.com/sirupsen/logrus/issues/784#issuecomment-403765306
+func initLogger() {
+	// create a new file for logs
+	logs, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.WithError(err).Error("unable to open log file")
+	}
+	// open the multiwriter
+	multiWrite := io.MultiWriter(os.Stdout, logs)
+	log.SetFormatter(&log.TextFormatter{
+		ForceColors:     true,
+		FullTimestamp:   true,
+		TimestampFormat: time.RFC822,
+	})
+	log.SetOutput(multiWrite)
 }
