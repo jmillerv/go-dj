@@ -4,6 +4,7 @@ tasks:
   # Builds the go-dj binary
   build:
     cmds:
+      - task: lint
       - go build -v -o go-dj .
       - chmod +x go-dj
 
@@ -11,12 +12,18 @@ tasks:
   install_deps:
     cmds:
        - sudo apt install libasound2-dev libudev-dev pkg-config
+       - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.53.3
 
   # Runs go-dj
   run:
     cmds:
       - task: build
       - ./go-dj --help
+
+  # Lints go-dj
+  lint:
+    cmds:
+      - golangci-lint run ./...
 
   # Run the tests
   test:
