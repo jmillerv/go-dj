@@ -146,3 +146,15 @@ streams don't work.
 
 ## Feature Requests 
 I've built this out for my specific use case and released it to the public when I considered it feature complete. Suggestions are welcome for adding additional features.
+
+## Development Setup
+1. Install [golang](https://go.dev/doc/install)  
+2. Install [taskfile.dev](https://taskfile.dev/installation/) on your machine. 
+
+3. Run `task install_deps` in the root of this repo.
+
+4. Run `task run` in the root of this repo.
+
+If all passes without errors, you should be set to use this binary. Checkout the `taskfile.dev` for additional features 
+commands you can run.
+

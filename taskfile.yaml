@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+  # Builds the go-dj binary
+  build:
+    cmds:
+      - go build -v -o go-dj .
+      - chmod +x go-dj
+
+  # Installs dependencies necessary for go-dj to output audio
+  install_deps:
+    cmds:
+       - sudo apt install libasound2-dev libudev-dev pkg-config
+
+  # Runs go-dj
+  run:
+    cmds:
+      - task: build
+      - ./go-dj --help
+
+  # Run the tests
+  test:
+    cmds:
+      - go test -v ./content -run Test
