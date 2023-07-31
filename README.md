@@ -77,8 +77,6 @@ This is the milestone where I throw tickets that I may pull into current release
 ### [Longshots](https://github.com/jmillerv/go-dj/milestone/3)
 This is board is where neat ideas get thrown, but realistically won't be implemented anytime soon. 
 
-
-
 ## Config Setup
 
 go-dj consumes a file called `config.yml` the daemon searches for this file in the root of the directory
