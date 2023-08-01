@@ -1,11 +1,12 @@
 package content_test
 
 import (
-	"github.com/faiface/beep"
-	"github.com/jmillerv/go-dj/content"
 	"io"
 	"os"
 	"testing"
+
+	"github.com/faiface/beep"
+	"github.com/jmillerv/go-dj/content"
 )
 
 func TestLocalFile_Get(t *testing.T) {
@@ -38,6 +39,7 @@ func TestLocalFile_Get(t *testing.T) {
 	}
 }
 
+// nolint: TODO in github.com/jmillerv/go-dj/issues/16
 func TestLocalFile_Play(t *testing.T) {
 	type fields struct {
 		Name             string

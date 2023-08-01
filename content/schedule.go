@@ -182,13 +182,19 @@ func (s *Scheduler) Stop(signal os.Signal, media Media) {
 	if signal == syscall.SIGTERM {
 		log.Info("Got kill signal. ")
 		if media != nil {
-			media.Stop()
+			err := media.Stop()
+			if err != nil {
+				log.WithError(err).Error("scheduler.Stop::error stopping media")
+			}
 		}
 		log.Info("Program will terminate now.")
 		os.Exit(0)
 	} else if signal == syscall.SIGINT {
 		if media != nil {
-			media.Stop()
+			err := media.Stop()
+			if err != nil {
+				log.WithError(err).Error("scheduler.Stop::error stopping media")
+			}
 		}
 		log.Info("Got CTRL+C signal")
 		if media != nil {
