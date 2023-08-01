@@ -243,3 +243,7 @@ linters:
   # Run only fast linters from enabled linters set (first run won't be fast)
   # Default: false
   fast: true
+linters-settings:
+  nolintlint:
+    # Disable to ensure that nolint directives don't have a leading space. Default is true.
+    allow-leading-space: true

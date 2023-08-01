@@ -1,12 +1,14 @@
+// nolint: TODO https://github.com/jmillerv/go-dj/issues/16
 package content
 
 // file labeled _internal_test because none of these functions are public.
 
 import (
-	"github.com/mmcdole/gofeed"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/mmcdole/gofeed"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_contains(t *testing.T) {

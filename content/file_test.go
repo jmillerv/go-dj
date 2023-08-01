@@ -1,3 +1,4 @@
+// nolint: TODO https://github.com/jmillerv/go-dj/issues/16
 package content_test
 
 import (
@@ -39,7 +40,6 @@ func TestLocalFile_Get(t *testing.T) {
 	}
 }
 
-// nolint: TODO in github.com/jmillerv/go-dj/issues/16
 func TestLocalFile_Play(t *testing.T) {
 	type fields struct {
 		Name             string

@@ -1,8 +1,10 @@
+// nolint: TODO https://github.com/jmillerv/go-dj/issues/16
 package content_test
 
 import (
-	. "github.com/jmillerv/go-dj/content"
 	"testing"
+
+	. "github.com/jmillerv/go-dj/content"
 )
 
 func TestWebRadio_Get(t *testing.T) {

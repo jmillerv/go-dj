@@ -1,9 +1,11 @@
+// nolint: TODO https://github.com/jmillerv/go-dj/issues/16
 package content_test
 
 import (
+	"testing"
+
 	. "github.com/jmillerv/go-dj/content"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestProgram_GetMedia(t *testing.T) {

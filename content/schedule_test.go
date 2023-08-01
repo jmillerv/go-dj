@@ -1,9 +1,11 @@
+// nolint: TODO https://github.com/jmillerv/go-dj/issues/16
 package content
 
 import (
+	"testing"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestNewScheduler(t *testing.T) {

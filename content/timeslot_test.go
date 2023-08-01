@@ -1,10 +1,12 @@
+// nolint: TODO https://github.com/jmillerv/go-dj/issues/16
 package content
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 )
 
 type TimeProvider interface {

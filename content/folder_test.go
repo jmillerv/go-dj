@@ -1,9 +1,11 @@
+// nolint: TODO https://github.com/jmillerv/go-dj/issues/16
 package content_test
 
 import (
-	"github.com/jmillerv/go-dj/content"
 	"os"
 	"testing"
+
+	"github.com/jmillerv/go-dj/content"
 )
 
 func TestFolder_Get(t *testing.T) {
