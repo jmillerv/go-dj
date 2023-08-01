@@ -109,10 +109,13 @@ func (l *LocalFile) setDecoder() error {
 		l.fileType = oggFile
 		l.decodeReadCloser = vorbis.Decode
 	default:
-		l.Stop()
+		err := l.Stop()
+		if err != nil {
+			log.WithError(err).Error("localFile.setDecoder::error stopping local file")
+		}
 		unknownType, err := filetype.Match(buf)
 		if err != nil {
-			log.WithError(err).Error("error getting filetype")
+			log.WithError(err).Error("localFile.setDecoder::error getting filetype")
 		}
 		return errors.New("unsupported filetype " + unknownType.Extension)
 	}
