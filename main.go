@@ -99,6 +99,9 @@ func main() {
 				Action: func(c *cli.Context) {
 					log.Info("clearing cache")
 					scheduler, err := content.NewScheduler(configFile)
+					if err != nil {
+						log.WithError(err).Error("content.NewScheduler::unable to create scheduler from config file")
+					}
 					ttl, err := time.ParseDuration(scheduler.Content.PlayedPodcastTTL)
 					if err != nil {
 						log.WithError(err).Error("unable to parse played podcast ttl")
