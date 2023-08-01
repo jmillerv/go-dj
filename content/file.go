@@ -84,6 +84,7 @@ func (l *LocalFile) Play() error {
 
 func (l *LocalFile) Stop() error {
 	log.Infof("file.Stop::Stopping stream from %v ", l.Path)
+
 	return nil
 }
 

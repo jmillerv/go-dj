@@ -218,12 +218,14 @@ func NewScheduler(file string) (*Scheduler, error) {
 	if err := viper.ReadInConfig(); err != nil {
 
 		log.WithField("file", file).WithError(err).Error("Failed to read in config file")
+
 		return nil, err
 	}
 	scheduler := new(Scheduler)
 
 	if err := viper.Unmarshal(scheduler); err != nil {
 		log.WithError(err).Error("unable to unmarshal config into struct")
+
 		return nil, err
 	}
 	if scheduler.Content.Programs == nil {

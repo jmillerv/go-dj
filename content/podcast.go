@@ -187,12 +187,14 @@ func HydratePodcastCache() {
 	err = json.Unmarshal(file, &data)
 	if err != nil {
 		log.WithError(err).Error("HydratePodcastCache::failed to unmarshal podcast cache local file")
+
 		return
 	}
 	// check that TTY is within range of cacheDate
 	duration, err := time.ParseDuration(data.TTY)
 	if err != nil {
 		log.WithError(err).Error("HydratePodcastCache::failed to parse tty")
+
 		return
 	}
 	if !data.CacheDate.Before(data.CacheDate.Add(duration)) {

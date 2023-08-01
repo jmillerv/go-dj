@@ -14,9 +14,9 @@ type podcasts struct {
 }
 
 type podcastCacheData struct {
-	Guids     []string
-	TTY       string
-	CacheDate time.Time
+	Guids     []string  `json:"guids"`
+	TTY       string    `json:"tty"`
+	CacheDate time.Time `json:"cacheDate"`
 }
 
 func (p *podcastCacheData) fromCache(cacheData any) *podcastCacheData {

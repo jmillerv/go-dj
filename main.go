@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	configFile      = "config.yml"
-	config_override = "GODJ_CONFIG_OVERRIDE"
-	logFile         = "/tmp/godj.log"
+	configFile     = "config.yml"
+	configOverride = "GODJ_CONFIG_OVERRIDE"
+	logFile        = "/tmp/godj.log"
 )
 
 func main() {
@@ -32,8 +32,8 @@ func main() {
 				Action: func(c *cli.Context) {
 					var config string
 					log.Info("creating schedule from config")
-					if os.Getenv(config_override) != "" {
-						config = os.Getenv(config_override)
+					if os.Getenv(configOverride) != "" {
+						config = os.Getenv(configOverride)
 					} else {
 						config = configFile
 					}
@@ -59,6 +59,7 @@ func main() {
 						if err != nil {
 							log.WithError(err).Error("scheduler.Shuffle::unable to run go-dj")
 						}
+
 						return
 					}
 					// run content normally

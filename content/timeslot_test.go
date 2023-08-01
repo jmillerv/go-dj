@@ -1,4 +1,4 @@
-// nolint: TODO https://github.com/jmillerv/go-dj/issues/16
+// nolint:TODO https://github.com/jmillerv/go-dj/issues/16
 package content
 
 import (

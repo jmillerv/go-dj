@@ -23,6 +23,7 @@ func (p *Program) getMediaType() MediaType {
 
 func (p *Program) GetMedia() Media {
 	media := p.mediaFactory()
+
 	return media
 }
 

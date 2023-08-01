@@ -1,4 +1,4 @@
-// nolint: TODO https://github.com/jmillerv/go-dj/issues/16
+// nolint:TODO https://github.com/jmillerv/go-dj/issues/16
 package content
 
 // file labeled _internal_test because none of these functions are public.

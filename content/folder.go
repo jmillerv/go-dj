@@ -44,6 +44,7 @@ func (f *Folder) Play() error {
 
 func (f *Folder) Stop() error {
 	log.Infof("folder.Stop::Stopping stream from %v ", f.Path)
+
 	return nil
 }
 
