@@ -20,10 +20,11 @@ import (
 )
 
 const (
-	wavFile  = "wav"
-	mp3File  = "mp3"
-	oggFile  = "oggs"
-	flacFile = "flac"
+	wavFile        = "wav"
+	mp3File        = "mp3"
+	oggFile        = "oggs"
+	flacFile       = "flac"
+	sampleRateTime = 10
 )
 
 type LocalFile struct {
@@ -37,64 +38,78 @@ type LocalFile struct {
 
 func (l *LocalFile) Get() error {
 	log.Infof("buffering file from %s", l.Path)
+
 	f, err := os.Open(l.Path)
 	if err != nil {
-		return errors.New(fmt.Sprintf("unable to open file from path: %v", err))
+		return errors.New(fmt.Sprintf("unable to open file from path: %v", err)) //nolint:lll,revive,gosimple,nolintlint // error pref
 	}
+
 	log.Infof("decoding file from %v", l.Path)
 	l.Content = f
+
 	return nil
 }
 
 func (l *LocalFile) Play() error {
 	var streamer beep.StreamSeekCloser
-	var format beep.Format
+	var format beep.Format //nolint:wsl // it's fine for declarations to touch
+
 	err := l.setDecoder()
 	if err != nil {
-		return errors.New(fmt.Sprintf("error setting decoder: %v", err))
+		return errors.New(fmt.Sprintf("error setting decoder: %v", err)) //nolint:revive,gosimple // error pref
 	}
+
 	_, err = l.Content.Seek(0, 0)
 	if err != nil {
-		return errors.New(fmt.Sprintf("unable to seek to beginning of file: %v", err))
+		return errors.New(fmt.Sprintf("unable to seek to beginning of file: %v", err)) //nolint:lll,revive,gosimple,nolintlint // error pref
 	}
+
 	if l.fileType == wavFile || l.fileType == flacFile {
 		streamer, format, err = l.decodeReader(l.Content)
 		if err != nil {
-			return errors.New(fmt.Sprintf("unable to decode file: %v", err))
+			return errors.New(fmt.Sprintf("unable to decode file: %v", err)) //nolint:revive,gosimple // error pref
 		}
 	}
+
 	if l.fileType == mp3File || l.fileType == oggFile {
 		streamer, format, err = l.decodeReadCloser(l.Content)
 		if err != nil {
 			log.WithError(err).Fatal("unable to decode file")
 		}
 	}
+
 	log.Infof("playing file buffer from %v", l.Path)
-	err = speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
+
+	err = speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/sampleRateTime))
 	if err != nil {
-		return errors.New(fmt.Sprintf("unable to play file: %v", err))
+		return errors.New(fmt.Sprintf("unable to play file: %v", err)) //nolint:revive,gosimple,nolintlint // error pref
 	}
+
 	done := make(chan bool)
-	speaker.Play(beep.Seq(streamer, beep.Callback(func() {
+	speaker.Play(beep.Seq(streamer, beep.Callback(func() { //nolint:wsl // grouping makes sense here
 		done <- true
 	})))
 	<-done
+
 	return nil
 }
 
 func (l *LocalFile) Stop() error {
 	log.Infof("file.Stop::Stopping stream from %v ", l.Path)
+
 	return nil
 }
 
 func (l *LocalFile) setDecoder() error {
 	buf, err := io.ReadAll(l.Content)
 	if buf == nil {
-		return errors.New("empty bytes")
+		return errors.New("empty bytes") //nolint:goerr113 // we want this error as it is.
 	}
+
 	if err != nil {
 		return err
 	}
+
 	switch l.getFileType(buf) {
 	case wavFile:
 		l.fileType = wavFile
@@ -109,31 +124,43 @@ func (l *LocalFile) setDecoder() error {
 		l.fileType = oggFile
 		l.decodeReadCloser = vorbis.Decode
 	default:
-		l.Stop()
+		err := l.Stop()
+		if err != nil {
+			log.WithError(err).Error("localFile.setDecoder::error stopping local file")
+		}
+
 		unknownType, err := filetype.Match(buf)
 		if err != nil {
-			log.WithError(err).Error("error getting filetype")
+			log.WithError(err).Error("localFile.setDecoder::error getting filetype")
 		}
-		return errors.New("unsupported filetype " + unknownType.Extension)
+
+		return errors.New("unsupported filetype " + unknownType.Extension) //nolint:goerr113 // desired error
 	}
+
 	return nil
 }
+
 func (l *LocalFile) getFileType(buf []byte) string {
 	ext := filepath.Ext(l.Path)
 	trimmedExt := strings.TrimLeft(ext, ".") // remove the delimiter
+
 	// added the trim check because some supported filetypes were not recognized by
 	// the filetype.IsType function despite having proper extension and working with the respective decoder
 	if filetype.IsType(buf, filetype.GetType("wav")) || trimmedExt == wavFile {
 		return wavFile
 	}
+
 	if filetype.IsType(buf, filetype.GetType("mp3")) || trimmedExt == mp3File {
 		return mp3File
 	}
+
 	if filetype.IsType(buf, filetype.GetType("ogg")) || trimmedExt == oggFile {
 		return oggFile
 	}
+
 	if filetype.IsType(buf, filetype.GetType("flac")) || trimmedExt == flacFile {
 		return flacFile
 	}
+
 	return ""
 }

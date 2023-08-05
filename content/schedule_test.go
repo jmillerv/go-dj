@@ -1,9 +1,11 @@
+// nolint:TODO https://github.com/jmillerv/go-dj/issues/16
 package content
 
 import (
+	"testing"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestNewScheduler(t *testing.T) {
@@ -43,7 +45,8 @@ func TestNewScheduler(t *testing.T) {
 								},
 								Type: MediaType("file"),
 							},
-						}},
+						},
+					},
 				},
 			},
 			wantErr: false,
@@ -65,7 +68,7 @@ func TestNewScheduler(t *testing.T) {
 			wantErr: true,
 		},
 	}
-	// TODO make test pass when running in parallel and troubleshoot race condition.
+	//nolint:godox // TODO make test pass when running in parallel and troubleshoot race condition.
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := NewScheduler(tt.args.file)

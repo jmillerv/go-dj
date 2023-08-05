@@ -1,12 +1,14 @@
+// nolint:TODO https://github.com/jmillerv/go-dj/issues/16
 package content
 
 // file labeled _internal_test because none of these functions are public.
 
 import (
-	"github.com/mmcdole/gofeed"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/mmcdole/gofeed"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_contains(t *testing.T) {
@@ -76,7 +78,7 @@ func Test_podcasts_getNewestEpisode(t *testing.T) {
 		fields fields
 		want   episode
 	}{
-		// TODO: Add test cases.
+		//nolint:godox // TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -97,7 +99,7 @@ func Test_podcasts_getOldestEpisode(t *testing.T) {
 		fields fields
 		want   episode
 	}{
-		// TODO: Add test cases.
+		//nolint:godox // TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -118,7 +120,7 @@ func Test_podcasts_getRandomEpisode(t *testing.T) {
 		fields fields
 		want   episode
 	}{
-		// TODO: Add test cases.
+		//nolint:godox // TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

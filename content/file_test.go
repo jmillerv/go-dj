@@ -1,11 +1,13 @@
+// nolint:TODO https://github.com/jmillerv/go-dj/issues/16
 package content_test
 
 import (
-	"github.com/faiface/beep"
-	"github.com/jmillerv/go-dj/content"
 	"io"
 	"os"
 	"testing"
+
+	"github.com/faiface/beep"
+	"github.com/jmillerv/go-dj/content"
 )
 
 func TestLocalFile_Get(t *testing.T) {
@@ -22,7 +24,7 @@ func TestLocalFile_Get(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		//nolint:godox // TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -52,7 +54,7 @@ func TestLocalFile_Play(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		//nolint:godox // TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -82,7 +84,7 @@ func TestLocalFile_Stop(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		//nolint:godox // TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

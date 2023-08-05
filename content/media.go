@@ -1,8 +1,9 @@
 package content
 
 import (
-	"github.com/faiface/beep"
 	"io"
+
+	"github.com/faiface/beep"
 )
 
 // content type should be able to be set from the configuration
