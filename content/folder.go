@@ -20,10 +20,12 @@ type Folder struct {
 
 func (f *Folder) Get() (err error) {
 	log.Infof("buffering files from %s", f.Path)
+
 	f.Content, err = os.ReadDir(f.Path)
 	if err != nil {
 		return errors.New(fmt.Sprintf("unable to read folder from path: %v", err))
 	}
+
 	return nil
 }
 
@@ -34,11 +36,13 @@ func (f *Folder) Play() error {
 		if err != nil {
 			return err
 		}
+
 		err = localFile.Play()
 		if err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -53,9 +57,11 @@ func (f *Folder) getLocalFile(file os.DirEntry) (*LocalFile, error) {
 		Name: file.Name(),
 		Path: f.Path + "/" + file.Name(),
 	}
+
 	err := localFile.Get()
 	if err != nil {
 		return nil, err
 	}
+
 	return localFile, nil
 }

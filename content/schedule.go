@@ -17,6 +17,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+//nolint:gochecknoglobals the globals here help but a refactor would be considered.
 var Shuffled bool
 
 type Scheduler struct {
@@ -29,12 +30,15 @@ type Scheduler struct {
 	}
 }
 
-func (s *Scheduler) Run() error {
+func (s *Scheduler) Run() error { //nolint:funlen
 	var wg sync.WaitGroup
+
 	log.Info("Starting Daemon")
+
 	// setup signal listeners
 	sigchnl := make(chan os.Signal, 1)
 	signal.Notify(sigchnl)
+
 	exitchnl := make(chan int)
 
 	totalPrograms := len(s.Content.Programs)
@@ -46,14 +50,18 @@ func (s *Scheduler) Run() error {
 		// for loop that can be forced to continue from a go routine
 		for _, p := range s.Content.Programs {
 			now := time.Now()
+
 			log.Debugf("program %v", formatter.StructToIndentedString(p))
 
 			// if content is scheduled, retrieve and play
 			scheduled := p.Timeslot.IsScheduledNow(now)
 			if scheduled {
 				log.Infof("scheduler.Run::getting media type: %v", p.Type)
+
 				content := p.GetMedia()
+
 				log.Debugf("media struct: %v", content)
+
 				err := content.Get() // retrieve contents from file
 				if err != nil {
 					return err
@@ -74,9 +82,12 @@ func (s *Scheduler) Run() error {
 						duration := getDurationToEndTime(p.Timeslot.End) // might cause an index out of range issue
 						stopCountDown(content, duration, &wg)
 					}()
+
 					go func() {
 						log.Info("playing web radio inside of a go routine")
+
 						wg.Add(1)
+
 						err = content.Play()
 						if err != nil {
 							log.WithError(err).Error("Run::content.Play")
@@ -88,6 +99,7 @@ func (s *Scheduler) Run() error {
 						log.Infof("podcast player duration %s", podcast.Player.duration)
 						stopCountDown(content, podcast.Player.duration, &wg)
 					}()
+
 					go func() {
 						log.Info("playing podcast inside of a go routine")
 						wg.Add(1)
@@ -103,13 +115,17 @@ func (s *Scheduler) Run() error {
 					}
 				}
 			}
+
 			log.Info("paused while go routines are running")
+
 			wg.Wait() // pause
+
 			if !p.Timeslot.IsScheduledNow(now) {
 				log.WithField("IsScheduledNow", p.Timeslot.IsScheduledNow(now)).
 					WithField("current time", time.Now().
 						Format(time.Kitchen)).Infof("media not scheduled")
 			}
+
 			programIndex++ // increment index
 
 			// check programs for scheduled content at regular interval
@@ -121,12 +137,14 @@ func (s *Scheduler) Run() error {
 				if err != nil {
 					return err
 				}
+
 				go func() {
 					for {
 						stop := <-sigchnl
 						s.Stop(stop, nil) // passing nil because there is no media to stop.
 					}
 				}()
+
 				// pause the loop
 				log.WithField("pause interval", s.Content.CheckInterval).Info("loop paused, will resume after pause interval")
 				time.Sleep(interval)
@@ -136,6 +154,7 @@ func (s *Scheduler) Run() error {
 
 	exitcode := <-exitchnl
 	os.Exit(exitcode)
+
 	return nil
 }
 
@@ -149,7 +168,9 @@ func (s *Scheduler) Shuffle() error {
 
 	// setup signal listeners
 	sigchnl := make(chan os.Signal, 1)
+
 	signal.Notify(sigchnl)
+
 	exitchnl := make(chan int)
 
 	for _, p := range s.Content.Programs {
@@ -157,16 +178,19 @@ func (s *Scheduler) Shuffle() error {
 		log.Infof("getting media type: %v", p.Type)
 		content := p.GetMedia()
 		log.Debugf("media struct: %v", content)
+
 		err := content.Get()
 		if err != nil {
 			return err
 		}
+
 		go func() {
 			for {
 				stop := <-sigchnl
 				s.Stop(stop, content)
 			}
 		}()
+
 		err = content.Play()
 		if err != nil {
 			return err
@@ -175,19 +199,23 @@ func (s *Scheduler) Shuffle() error {
 
 	exitcode := <-exitchnl
 	os.Exit(exitcode)
+
 	return nil
 }
 
 func (s *Scheduler) Stop(signal os.Signal, media Media) {
 	if signal == syscall.SIGTERM {
 		log.Info("Got kill signal. ")
+
 		if media != nil {
 			err := media.Stop()
 			if err != nil {
 				log.WithError(err).Error("scheduler.Stop::error stopping media")
 			}
 		}
+
 		log.Info("Program will terminate now.")
+
 		os.Exit(0)
 	} else if signal == syscall.SIGINT {
 		if media != nil {
@@ -196,11 +224,15 @@ func (s *Scheduler) Stop(signal os.Signal, media Media) {
 				log.WithError(err).Error("scheduler.Stop::error stopping media")
 			}
 		}
+
 		log.Info("Got CTRL+C signal")
+
 		if media != nil {
-			media.Stop()
+			media.Stop() //nolint:errcheck
 		}
+
 		fmt.Println("Closing.")
+
 		os.Exit(0)
 	}
 }
@@ -215,12 +247,13 @@ func NewScheduler(file string) (*Scheduler, error) {
 	viper.SetConfigFile(file)
 	viper.SetDefault("CheckInterval", "10m")     // default Check Interval
 	viper.SetDefault("PlayedPodcastTTL", "730h") // default Cache TTL 730h is ~1 month
-	if err := viper.ReadInConfig(); err != nil {
 
+	if err := viper.ReadInConfig(); err != nil {
 		log.WithField("file", file).WithError(err).Error("Failed to read in config file")
 
 		return nil, err
 	}
+
 	scheduler := new(Scheduler)
 
 	if err := viper.Unmarshal(scheduler); err != nil {
@@ -228,28 +261,33 @@ func NewScheduler(file string) (*Scheduler, error) {
 
 		return nil, err
 	}
+
 	if scheduler.Content.Programs == nil {
 		return nil, errors.New("scheduler is empty")
-
 	}
 
 	log.Info("config loaded", formatter.StructToIndentedString(scheduler))
+
 	return scheduler, nil
 }
 
 // stopCountDown takes in a Media and duration and starts a ticker to stop the playing content
 func stopCountDown(content Media, period time.Duration, wg *sync.WaitGroup) {
 	log.Infof("remaining time playing this stream %v", period)
+
 	t := time.NewTicker(period)
 	defer t.Stop()
-	for {
+
+	for { //nolint:gosimple // for select worked better here at the time of writing.
 		select {
 		case <-t.C: // call content.Stop
 			log.Info("stopping content")
+
 			err := content.Stop()
 			if err != nil {
 				log.WithError(err).Error("stopCountDown::error stopping content")
 			}
+
 			// typecast content as WebRadio
 			webRadio, ok := content.(*WebRadio)
 			if ok {
@@ -258,6 +296,7 @@ func stopCountDown(content Media, period time.Duration, wg *sync.WaitGroup) {
 					wg.Done()
 				}
 			}
+
 			// typecast content as Podcast
 			podcast, ok := content.(*Podcast)
 			if ok {
@@ -265,7 +304,9 @@ func stopCountDown(content Media, period time.Duration, wg *sync.WaitGroup) {
 					wg.Done()
 				}
 			}
+
 			log.Info("content stopped")
+
 			return
 		}
 	}
@@ -283,12 +324,16 @@ func getDurationToEndTime(currentProgramEnd string) time.Duration {
 	dateString := strconv.Itoa(year) + "-" + strconv.Itoa(int(month)) + "-" + strconv.Itoa(day)
 
 	// parse the date and the config time
-	// parsed times are returned in 2022-12-05 15:05:00 +0000 UTC format which doesn't appear to have a const in the time package
+	// parsed times are returned in 2022-12-05 15:05:00 +0000 UTC format
+	// which doesn't appear to have a const in the time package
 	parsedProgramEnd, _ := dateparse.ParseAny(dateString + " " + currentProgramEnd)
 
 	// matched parse time to fixed zone time
-	currentProgramEndTime := time.Date(parsedProgramEnd.Year(), parsedProgramEnd.Month(), parsedProgramEnd.Day(), parsedProgramEnd.Hour(), parsedProgramEnd.Minute(), parsedProgramEnd.Second(), parsedProgramEnd.Nanosecond(), current.Location())
+	currentProgramEndTime := time.Date(parsedProgramEnd.Year(), parsedProgramEnd.Month(), parsedProgramEnd.Day(),
+		parsedProgramEnd.Hour(), parsedProgramEnd.Minute(), parsedProgramEnd.Second(),
+		parsedProgramEnd.Nanosecond(), current.Location())
 
 	duration := currentProgramEndTime.Sub(current)
+
 	return duration
 }

@@ -18,8 +18,8 @@ const (
 	logFile        = "/tmp/godj.log"
 )
 
-func main() {
-	app := &cli.App{
+func main() { //nolint:funlen,cyclop // main function can be longer & more complex.
+	app := &cli.App{ //nolint:exhaustivestruct,exhaustruct
 		Name:    "Go DJ",
 		Usage:   "Daemon that schedules audio programming content",
 		Version: "0.0.1",
@@ -69,21 +69,21 @@ func main() {
 					}
 				},
 				Flags: []cli.Flag{
-					cli.BoolFlag{
+					cli.BoolFlag{ //nolint:exhaustivestruct,exhaustruct
 						Name:        "random",
 						Usage:       "Start your radio station w/ randomized schedule",
 						Required:    false,
 						Hidden:      false,
 						Destination: &content.Shuffled,
 					},
-					cli.BoolFlag{
+					cli.BoolFlag{ //nolint:exhaustivestruct,exhaustruct
 						Name:        "pod-oldest",
 						Usage:       "podcasts will play starting with the oldest first",
 						Required:    false,
 						Hidden:      false,
 						Destination: &content.PodcastPlayerOrderOldest,
 					},
-					cli.BoolFlag{
+					cli.BoolFlag{ //nolint:exhaustivestruct,exhaustruct
 						Name:        "pod-random",
 						Usage:       "podcasts will play in a random order",
 						Required:    false,
@@ -131,24 +131,28 @@ func init() {
 	content.Shuffled = false
 	content.PodcastPlayerOrderOldest = false
 	content.PodcastPlayOrderRandom = false
+
 	initLogger()
 }
 
 // initLogger creates the multiwriter, determines the log format for each destination, and sets the logfile location.
-// at a later stage, it may be desirable to have different formats for standard out vs the log file. An example of how to do that can be found
-// here https://github.com/sirupsen/logrus/issues/784#issuecomment-403765306
+// at a later stage, it may be desirable to have different formats for standard out vs the log file.
+// An example of how to do that can be found here https://github.com/sirupsen/logrus/issues/784#issuecomment-403765306
 func initLogger() {
 	// create a new file for logs
 	logs, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.WithError(err).Error("unable to open log file")
 	}
+
 	// open the multiwriter
 	multiWrite := io.MultiWriter(os.Stdout, logs)
+
 	log.SetFormatter(&log.TextFormatter{
 		ForceColors:     true,
 		FullTimestamp:   true,
 		TimestampFormat: time.RFC822,
 	})
+
 	log.SetOutput(multiWrite)
 }

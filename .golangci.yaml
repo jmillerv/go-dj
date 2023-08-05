@@ -33,8 +33,6 @@ linters:
     - gci
     - ginkgolinter
     - gocheckcompilerdirectives
-    - gochecknoglobals
-    - gochecknoinits
     - gocognit
     - goconst
     - gocritic
@@ -114,6 +112,8 @@ linters:
     - nonamedreturns
     - ireturn
     - ifshort
+    - gochecknoinits
+    - gochecknoglobals
 
   # Enable presets.
   # https://golangci-lint.run/usage/linters

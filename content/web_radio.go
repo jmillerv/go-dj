@@ -42,46 +42,57 @@ func (w *WebRadio) Get() error {
 	webRadioStream.isPlaying = false
 
 	w.Player = webRadioStream
+
 	return nil
 }
 
 func (w *WebRadio) Play() error {
 	log.Infof("streaming from %v ", w.URL)
+
 	if !w.Player.isPlaying {
 		err := w.Player.command.Start()
+
 		if err != nil {
 			return errors.Wrap(err, "error starting web radio streamPlayer")
 		}
+
 		w.Player.isPlaying = true
 		done := make(chan bool)
+
 		func() {
 			w.Player.pipeChan <- w.Player.out
 			done <- true
 		}()
 		<-done
 	}
+
 	return nil
 }
 
 func (w *WebRadio) Stop() error {
 	log.Infof("webradio.Stop::Stopping stream from %v ", w.URL)
+
 	if w.Player.isPlaying {
 		w.Player.isPlaying = false
+
 		_, err := w.Player.in.Write([]byte("q"))
 		if err != nil {
 			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Write()")
 		}
+
 		err = w.Player.in.Close()
 		if err != nil {
 			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Close()")
 		}
+
 		err = w.Player.out.Close()
 		if err != nil {
 			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.out.Close()")
 		}
-		w.Player.command = nil
 
+		w.Player.command = nil
 		w.Player.url = ""
 	}
+
 	return nil
 }

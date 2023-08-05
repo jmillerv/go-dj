@@ -24,15 +24,18 @@ func (p *podcastCacheData) fromCache(cacheData any) *podcastCacheData {
 	if ok {
 		return &data
 	}
+
 	return nil
 }
 
+//nolint:ineffassign,staticcheck,wastedassign
 func (p *podcasts) getNewestEpisode() episode {
 	var newestEpisode episode
-	var date *time.Time
-	date = p.Episodes[0].PublishedParsed
-	for i, ep := range p.Episodes {
+	var date *time.Time //nolint:wsl // declarations are fine to cuddle
 
+	date = p.Episodes[0].PublishedParsed
+
+	for i, ep := range p.Episodes {
 		// check for cacheData cache
 		cacheData, cacheHit := cache.PodcastPlayedCache.Get(defaultPodcastCache)
 		if cacheHit {
@@ -41,7 +44,9 @@ func (p *podcasts) getNewestEpisode() episode {
 				continue
 			}
 		}
+
 		date = p.Episodes[i].PublishedParsed // update date
+
 		if ep.PublishedParsed.After(*date) || ep.PublishedParsed.Equal(*date) {
 			date = ep.PublishedParsed
 			newestEpisode.Item = ep
@@ -49,13 +54,17 @@ func (p *podcasts) getNewestEpisode() episode {
 			newestEpisode.EpExtension = ep.Enclosures[0].Type
 		}
 	}
+
 	return newestEpisode
 }
 
+//nolint:ineffassign,staticcheck,wastedassign
 func (p *podcasts) getOldestEpisode() episode {
 	var oldestEpisode episode
-	var date *time.Time
+	var date *time.Time //nolint:wsl //  it's fine to cuddle declarations
+
 	date = p.Episodes[0].PublishedParsed // update date
+
 	for i, ep := range p.Episodes {
 		cacheData, cacheHit := cache.PodcastPlayedCache.Get(ep.GUID)
 		if cacheHit {
@@ -64,6 +73,7 @@ func (p *podcasts) getOldestEpisode() episode {
 				continue
 			}
 		}
+
 		date = p.Episodes[i].PublishedParsed // update date
 		if ep.PublishedParsed.Before(*date) || ep.PublishedParsed.Equal(*date) {
 			date = ep.PublishedParsed
@@ -72,25 +82,32 @@ func (p *podcasts) getOldestEpisode() episode {
 			oldestEpisode.EpExtension = ep.Enclosures[0].Type
 		}
 	}
+
 	return oldestEpisode
 }
 
 func (p *podcasts) getRandomEpisode() episode {
 	var randomEpisode episode
+
 	rand.Seed(time.Now().UnixNano())
+
 	item := p.Episodes[rand.Intn(len(p.Episodes))]
 	_, cacheHit := cache.PodcastPlayedCache.Get(item.GUID)
+
 	// block until cacheHit != true
-	for cacheHit == true {
+	for cacheHit {
 		item = p.Episodes[rand.Intn(len(p.Episodes))]
+
 		_, cacheHit = cache.PodcastPlayedCache.Get(item.GUID)
 		if cacheHit {
 			continue
 		}
 	}
+
 	randomEpisode.Item = item
 	randomEpisode.EpExtension = item.Enclosures[0].Type
 	randomEpisode.EpURL = item.Enclosures[0].URL
+
 	return randomEpisode
 }
 
