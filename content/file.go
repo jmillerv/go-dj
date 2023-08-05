@@ -20,10 +20,11 @@ import (
 )
 
 const (
-	wavFile  = "wav"
-	mp3File  = "mp3"
-	oggFile  = "oggs"
-	flacFile = "flac"
+	wavFile        = "wav"
+	mp3File        = "mp3"
+	oggFile        = "oggs"
+	flacFile       = "flac"
+	sampleRateTime = 10
 )
 
 type LocalFile struct {
@@ -40,7 +41,7 @@ func (l *LocalFile) Get() error {
 
 	f, err := os.Open(l.Path)
 	if err != nil {
-		return errors.New(fmt.Sprintf("unable to open file from path: %v", err))
+		return errors.New(fmt.Sprintf("unable to open file from path: %v", err)) //nolint:lll,revive,gosimple,nolintlint // error pref
 	}
 
 	log.Infof("decoding file from %v", l.Path)
@@ -55,18 +56,18 @@ func (l *LocalFile) Play() error {
 
 	err := l.setDecoder()
 	if err != nil {
-		return errors.New(fmt.Sprintf("error setting decoder: %v", err))
+		return errors.New(fmt.Sprintf("error setting decoder: %v", err)) //nolint:revive,gosimple // error pref
 	}
 
 	_, err = l.Content.Seek(0, 0)
 	if err != nil {
-		return errors.New(fmt.Sprintf("unable to seek to beginning of file: %v", err))
+		return errors.New(fmt.Sprintf("unable to seek to beginning of file: %v", err)) //nolint:lll,revive,gosimple,nolintlint // error pref
 	}
 
 	if l.fileType == wavFile || l.fileType == flacFile {
 		streamer, format, err = l.decodeReader(l.Content)
 		if err != nil {
-			return errors.New(fmt.Sprintf("unable to decode file: %v", err))
+			return errors.New(fmt.Sprintf("unable to decode file: %v", err)) //nolint:revive,gosimple // error pref
 		}
 	}
 
@@ -79,9 +80,9 @@ func (l *LocalFile) Play() error {
 
 	log.Infof("playing file buffer from %v", l.Path)
 
-	err = speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
+	err = speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/sampleRateTime))
 	if err != nil {
-		return errors.New(fmt.Sprintf("unable to play file: %v", err))
+		return errors.New(fmt.Sprintf("unable to play file: %v", err)) //nolint:revive,gosimple,nolintlint // error pref
 	}
 
 	done := make(chan bool)
@@ -133,11 +134,12 @@ func (l *LocalFile) setDecoder() error {
 			log.WithError(err).Error("localFile.setDecoder::error getting filetype")
 		}
 
-		return errors.New("unsupported filetype " + unknownType.Extension)
+		return errors.New("unsupported filetype " + unknownType.Extension) //nolint:goerr113 // desired error
 	}
 
 	return nil
 }
+
 func (l *LocalFile) getFileType(buf []byte) string {
 	ext := filepath.Ext(l.Path)
 	trimmedExt := strings.TrimLeft(ext, ".") // remove the delimiter

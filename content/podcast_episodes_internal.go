@@ -39,7 +39,7 @@ func (p *podcasts) getNewestEpisode() episode {
 		// check for cacheData cache
 		cacheData, cacheHit := cache.PodcastPlayedCache.Get(defaultPodcastCache)
 		if cacheHit {
-			retrieved := (&podcastCacheData{}).fromCache(cacheData)
+			retrieved := (&podcastCacheData{}).fromCache(cacheData) //nolint:exhaustruct // need type casting
 			if contains(retrieved.Guids, ep.GUID) {
 				continue
 			}
@@ -68,7 +68,7 @@ func (p *podcasts) getOldestEpisode() episode {
 	for i, ep := range p.Episodes {
 		cacheData, cacheHit := cache.PodcastPlayedCache.Get(ep.GUID)
 		if cacheHit {
-			retrieved := (&podcastCacheData{}).fromCache(cacheData)
+			retrieved := (&podcastCacheData{}).fromCache(cacheData) //nolint:exhaustruct // typecasting
 			if contains(retrieved.Guids, ep.GUID) {
 				continue
 			}
@@ -91,12 +91,12 @@ func (p *podcasts) getRandomEpisode() episode {
 
 	rand.Seed(time.Now().UnixNano())
 
-	item := p.Episodes[rand.Intn(len(p.Episodes))]
+	item := p.Episodes[rand.Intn(len(p.Episodes))] //nolint:gosec // weak generator fine fo this purpose
 	_, cacheHit := cache.PodcastPlayedCache.Get(item.GUID)
 
 	// block until cacheHit != true
 	for cacheHit {
-		item = p.Episodes[rand.Intn(len(p.Episodes))]
+		item = p.Episodes[rand.Intn(len(p.Episodes))] //nolint:gosec // weak generator fine fo this purpose
 
 		_, cacheHit = cache.PodcastPlayedCache.Get(item.GUID)
 		if cacheHit {
@@ -117,9 +117,9 @@ type episode struct {
 	EpURL       string
 }
 
-func contains(guids []string, episodeGuid string) bool {
+func contains(guids []string, episodeGUID string) bool {
 	for _, v := range guids {
-		if v == episodeGuid {
+		if v == episodeGUID {
 			return true
 		}
 	}

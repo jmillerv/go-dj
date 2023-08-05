@@ -51,7 +51,6 @@ func (w *WebRadio) Play() error {
 
 	if !w.Player.isPlaying {
 		err := w.Player.command.Start()
-
 		if err != nil {
 			return errors.Wrap(err, "error starting web radio streamPlayer")
 		}

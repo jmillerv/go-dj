@@ -8,13 +8,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// Times represents timeslots and are parsed in a 24hour format
+// Times represents timeslots and are parsed in a 24hour format.
 type Timeslot struct {
 	Begin string
 	End   string
 }
 
-// IsScheduledNow checks the current time and returns a bool if the time falls within the range
+// IsScheduledNow checks the current time and returns a bool if the time falls within the range.
 func (t *Timeslot) IsScheduledNow(current time.Time) bool {
 	// get date info for string
 	date := time.Date(current.Year(), current.Month(), current.Day(), 0, 0, 0, 0, current.Location())

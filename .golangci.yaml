@@ -1,6 +1,16 @@
-run:
-  skip-files:
-    - '.*_test\.go'
+linters-settings:
+  gosec:
+    # To select a subset of rules to run.
+    # Available rules: https://github.com/securego/gosec#available-rules
+    #    includes:
+    # To specify a set of rules to explicitly exclude.
+    # Available rules: https://github.com/securego/gosec#available-rules
+    excludes:
+      - G204
+    # To specify the configuration of rules.
+    # The configuration of rules is not fully documented by gosec:
+    # https://github.com/securego/gosec#configuration
+    # https://github.com/securego/gosec/blob/569328eade2ccbad4ce2d0f21ee158ab5356a5cf/rules/rulelist.go#L60-L102
 linters:
   # Enable specific linter
   # https://golangci-lint.run/usage/linters/#enabled-by-default
@@ -24,7 +34,6 @@ linters:
     - errorlint
     - execinquery
     - exhaustive
-    - exhaustivestruct
     - exhaustruct
     - exportloopref
     - forbidigo
@@ -39,12 +48,11 @@ linters:
     - gocyclo
     - godot
     - godox
-    - goerr113
     - gofmt
     - gofumpt
     - goheader
     - goimports
-    - golint
+    - revive
     - gomnd
     - gomoddirectives
     - gomodguard
@@ -57,12 +65,10 @@ linters:
     - importas
     - ineffassign
     - interfacebloat
-    - interfacer
     - lll
     - loggercheck
     - maintidx
     - makezero
-    - maligned
     - mirror
     - misspell
     - musttag
@@ -73,7 +79,6 @@ linters:
     - nlreturn
     - noctx
     - nolintlint
-    - nosnakecase
     - nosprintfhostport
     - paralleltest
     - prealloc
@@ -82,10 +87,9 @@ linters:
     - reassign
     - revive
     - rowserrcheck
-    - scopelint
+    - exportloopref
     - sqlclosecheck
     - staticcheck
-    - structcheck
     - stylecheck
     - tagalign
     - tagliatelle
@@ -134,3 +138,7 @@ linters:
   # Run only fast linters from enabled linters set (first run won't be fast)
   # Default: false
   fast: true
+
+run:
+  skip-files:
+    - '.*_test\.go'

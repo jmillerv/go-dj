@@ -22,18 +22,21 @@ const (
 	podcastCacheLocalFile                = "./cache/podcastCache.json"
 	localFileTTY                         = "72h"
 	defaultPodcastPlayDuration           = "1h"
+	cachePermissions                     = 0644 //nolint:gofumpt // gofumpt does weird things
 )
 
-var pods podcasts // holds the feed data for podcasts
-var podcastStream streamPlayer
-var podcastCache podcastCacheData
+var (
+	pods          podcasts // holds the feed data for podcasts
+	podcastStream streamPlayer
+	podcastCache  podcastCacheData
+)
 
 type Podcast struct {
 	Name        string
 	URL         string
 	Player      streamPlayer
 	PlayOrder   PlayOrder
-	EpisodeGuid string
+	EpisodeGUID string
 	TTL         time.Duration // cache expiration time
 }
 
@@ -64,7 +67,7 @@ func (p *Podcast) Get() error { //nolint:cyclop,funlen // complexity of 11, igno
 	}
 	// set guid for cache when played
 	if ep.Item != nil {
-		p.EpisodeGuid = ep.Item.GUID
+		p.EpisodeGUID = ep.Item.GUID
 	}
 
 	// setup podcast stream
@@ -112,15 +115,15 @@ func (p *Podcast) Play() error {
 	log.Infof("streaming from %v ", p.URL)
 
 	if !p.Player.isPlaying {
-		log.WithField("episode", p.EpisodeGuid).Info("setting podcast played cache")
+		log.WithField("episode", p.EpisodeGUID).Info("setting podcast played cache")
 
 		cacheData, cacheHit := cache.PodcastPlayedCache.Get(defaultPodcastCache)
 		if cacheHit {
-			podcastCache = cacheData.(podcastCacheData)
+			podcastCache = cacheData.(podcastCacheData) //nolint:forcetypeassert // TODO: type checking
 		}
 
-		if p.EpisodeGuid != "" {
-			podcastCache.Guids = append(podcastCache.Guids, p.EpisodeGuid)
+		if p.EpisodeGUID != "" {
+			podcastCache.Guids = append(podcastCache.Guids, p.EpisodeGUID)
 		}
 
 		err := p.setCache(&podcastCache)
@@ -175,12 +178,12 @@ func (p *Podcast) Stop() error {
 	return nil
 }
 
-// setCache updates the in memory cache and persists a local file
+// setCache updates the in memory cache and persists a local file.
 func (p *Podcast) setCache(cacheData *podcastCacheData) error {
 	cache.PodcastPlayedCache.Set(defaultPodcastCache, cacheData, zcache.DefaultExpiration)
 	cacheData.TTY = localFileTTY
 
-	// TODO improve solution
+	//nolint:godox,nolintlint // TODO: improve solution
 	cacheData.CacheDate = time.Now() // This will keep the cache constantly refreshing every time an episode is played.
 
 	file, err := json.MarshalIndent(cacheData, "", " ")
@@ -188,7 +191,7 @@ func (p *Podcast) setCache(cacheData *podcastCacheData) error {
 		return err
 	}
 
-	err = os.WriteFile(podcastCacheLocalFile, file, 0644)
+	err = os.WriteFile(podcastCacheLocalFile, file, cachePermissions)
 	if err != nil {
 		return err
 	}
@@ -196,7 +199,7 @@ func (p *Podcast) setCache(cacheData *podcastCacheData) error {
 	return nil
 }
 
-// HydratePodcastCache populates the default podcast cache with a local file
+// HydratePodcastCache populates the default podcast cache with a local file.
 func HydratePodcastCache() {
 	// check if file exists
 	file, err := os.ReadFile(podcastCacheLocalFile)
@@ -205,7 +208,7 @@ func HydratePodcastCache() {
 		return
 	}
 
-	data := podcastCacheData{}
+	data := podcastCacheData{} //nolint:exhaustruct // we don't need to assign everything here
 
 	err = json.Unmarshal(file, &data)
 	if err != nil {

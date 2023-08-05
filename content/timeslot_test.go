@@ -19,7 +19,7 @@ type testTime struct {
 
 func (testTime *testTime) Now() time.Time {
 	tz, _ := time.LoadLocation("Local")
-	now := time.Date(2022, 12, 05, 23, 27, 0, 0, tz)
+	now := time.Date(2022, 12, 0o5, 23, 27, 0, 0, tz)
 	log.Infof("testTime %v", now)
 	return now
 }

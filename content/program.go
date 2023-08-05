@@ -28,7 +28,7 @@ func (p *Program) GetMedia() Media {
 	return media
 }
 
-//nolint:forcetypeassert,gosimple // type is checked in the switch case
+//nolint:forcetypeassert,gosimple,gocritic // type is checked in the switch case
 func (p *Program) mediaFactory() Media {
 	m := MediaTypeMap[p.Type]
 	switch m.(type) {

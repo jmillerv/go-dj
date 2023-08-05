@@ -1,7 +1,6 @@
 package content
 
 import (
-	"fmt"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -17,7 +16,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-//nolint:gochecknoglobals the globals here help but a refactor would be considered.
+//nolint:gochecknoglobals // the globals here help but a refactor would be considered.
 var Shuffled bool
 
 type Scheduler struct {
@@ -30,7 +29,7 @@ type Scheduler struct {
 	}
 }
 
-func (s *Scheduler) Run() error { //nolint:funlen
+func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintlint // TODO: consider refactoring
 	var wg sync.WaitGroup
 
 	log.Info("Starting Daemon")
@@ -55,7 +54,7 @@ func (s *Scheduler) Run() error { //nolint:funlen
 
 			// if content is scheduled, retrieve and play
 			scheduled := p.Timeslot.IsScheduledNow(now)
-			if scheduled {
+			if scheduled { //nolint:nestif // TODO: consider refactoring
 				log.Infof("scheduler.Run::getting media type: %v", p.Type)
 
 				content := p.GetMedia()
@@ -77,6 +76,7 @@ func (s *Scheduler) Run() error { //nolint:funlen
 
 				// if p.getMediaType is webRadioContent or podcastContent start a timer and stop content from inside a go routine
 				// because these are streams rather than files they behave differently from local content.
+				//nolint:gocritic,godox,nolintlint // TODO: refactor as a switch case and remove the nolint directive
 				if p.getMediaType() == webRadioContent {
 					go func() {
 						duration := getDurationToEndTime(p.Timeslot.End) // might cause an index out of range issue
@@ -95,7 +95,7 @@ func (s *Scheduler) Run() error { //nolint:funlen
 					}()
 				} else if p.getMediaType() == podcastContent {
 					go func() {
-						podcast := content.(*Podcast)
+						podcast := content.(*Podcast) //nolint:forcetypeassert // TODO: type checking
 						log.Infof("podcast player duration %s", podcast.Player.duration)
 						stopCountDown(content, podcast.Player.duration, &wg)
 					}()
@@ -158,7 +158,7 @@ func (s *Scheduler) Run() error { //nolint:funlen
 	return nil
 }
 
-// Shuffle plays through the config content at random
+// Shuffle plays through the config content at random.
 func (s *Scheduler) Shuffle() error {
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(s.Content.Programs),
@@ -204,7 +204,7 @@ func (s *Scheduler) Shuffle() error {
 }
 
 func (s *Scheduler) Stop(signal os.Signal, media Media) {
-	if signal == syscall.SIGTERM {
+	if signal == syscall.SIGTERM { //nolint:nestif // TODO: consider refactoring
 		log.Info("Got kill signal. ")
 
 		if media != nil {
@@ -231,13 +231,13 @@ func (s *Scheduler) Stop(signal os.Signal, media Media) {
 			media.Stop() //nolint:errcheck
 		}
 
-		fmt.Println("Closing.")
+		log.Println("Closing.")
 
 		os.Exit(0)
 	}
 }
 
-func (s *Scheduler) getNextProgram(index int) *Program {
+func (s *Scheduler) getNextProgram(index int) *Program { //nolint:unused
 	return s.Content.Programs[index]
 }
 
@@ -271,7 +271,7 @@ func NewScheduler(file string) (*Scheduler, error) {
 	return scheduler, nil
 }
 
-// stopCountDown takes in a Media and duration and starts a ticker to stop the playing content
+// stopCountDown takes in a Media and duration and starts a ticker to stop the playing content.
 func stopCountDown(content Media, period time.Duration, wg *sync.WaitGroup) {
 	log.Infof("remaining time playing this stream %v", period)
 
@@ -313,7 +313,9 @@ func stopCountDown(content Media, period time.Duration, wg *sync.WaitGroup) {
 }
 
 // getDurationToEndTime determines how much time in seconds needs to pass before the next program starts.
-// TODO look at this function and timeslot.go's IsScheduleNow() and attempt to refactor to remove duplicate code.
+// TODO: examine function and timeslot.go's IsScheduleNow(), attempt to refactor to remove duplicate code.
+//
+//nolint:godox //ignore the below line
 func getDurationToEndTime(currentProgramEnd string) time.Duration {
 	current := time.Now()
 	// get date info for string

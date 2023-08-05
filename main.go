@@ -16,6 +16,7 @@ const (
 	configFile     = "config.yml"
 	configOverride = "GODJ_CONFIG_OVERRIDE"
 	logFile        = "/tmp/godj.log"
+	logPermissions = 0666 //nolint:gofumpt // gofumpt does weird things to this
 )
 
 func main() { //nolint:funlen,cyclop // main function can be longer & more complex.
@@ -126,7 +127,7 @@ func main() { //nolint:funlen,cyclop // main function can be longer & more compl
 	}
 }
 
-// init sets global variables
+// init sets global variables.
 func init() {
 	content.Shuffled = false
 	content.PodcastPlayerOrderOldest = false
@@ -140,7 +141,7 @@ func init() {
 // An example of how to do that can be found here https://github.com/sirupsen/logrus/issues/784#issuecomment-403765306
 func initLogger() {
 	// create a new file for logs
-	logs, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	logs, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, logPermissions)
 	if err != nil {
 		log.WithError(err).Error("unable to open log file")
 	}
@@ -148,7 +149,7 @@ func initLogger() {
 	// open the multiwriter
 	multiWrite := io.MultiWriter(os.Stdout, logs)
 
-	log.SetFormatter(&log.TextFormatter{
+	log.SetFormatter(&log.TextFormatter{ //nolint:exhaustruct // don't need this full enumerated
 		ForceColors:     true,
 		FullTimestamp:   true,
 		TimestampFormat: time.RFC822,
