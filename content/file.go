@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -20,11 +21,16 @@ import (
 )
 
 const (
-	wavFile        = "wav"
-	mp3File        = "mp3"
-	oggFile        = "oggs"
-	flacFile       = "flac"
-	sampleRateTime = 10
+	wavFile         string = "wav"
+	mp3File         string = "mp3"
+	oggFile         string = "oggs"
+	flacFile        string = "flac"
+	sampleRateTime         = 10
+	wavFileBitRate  int64  = 1441
+	mp3FileBitRate  int64  = 128
+	oggFileBitRate  int64  = 192
+	flacFileBitRate int64  = 320
+	durationBase           = 10
 )
 
 type LocalFile struct {
@@ -163,4 +169,53 @@ func (l *LocalFile) getFileType(buf []byte) string {
 	}
 
 	return ""
+}
+
+// getEstimatedFileDuration uses oft use bitrates for given filtypes and provides and estimated duration in seconds
+func (l *LocalFile) getEstimatedFileDuration() string {
+	// assume a constant bitrate for the file types
+	switch l.fileType {
+	case wavFile:
+		stats, err := l.Content.Stat()
+		if err != nil {
+			log.WithError(err).Error("failed to get wav file stats")
+			return ""
+		}
+		duration := stats.Size() / wavFileBitRate
+
+		return strconv.FormatInt(duration, durationBase)
+
+	case mp3File:
+		stats, err := l.Content.Stat()
+		if err != nil {
+			log.WithError(err).Error("failed to get mp3 file stats")
+			return ""
+		}
+		duration := stats.Size() / mp3FileBitRate
+
+		return strconv.FormatInt(duration, durationBase)
+
+	case oggFile:
+		stats, err := l.Content.Stat()
+		if err != nil {
+			log.WithError(err).Error("failed to get mp3 file stats")
+			return ""
+		}
+		duration := stats.Size() / oggFileBitRate
+
+		return strconv.FormatInt(duration, durationBase)
+
+	case flacFile:
+		stats, err := l.Content.Stat()
+		if err != nil {
+			log.WithError(err).Error("failed to get FLAC file stats")
+			return ""
+		}
+		duration := stats.Size() / flacFileBitRate
+
+		return strconv.FormatInt(duration, durationBase)
+
+	default:
+		return "unknown file type: can't determine duration"
+	}
 }
