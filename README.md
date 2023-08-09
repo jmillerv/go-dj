@@ -145,7 +145,8 @@ The `web_radio` file is able to take in a web radio address and play it through 
 streams don't work. 
 
 ## Feature Requests 
-I've built this out for my specific use case and released it to the public when I considered it feature complete. Suggestions are welcome for adding additional features.
+I've built this out for my specific use case and released it to the public when I considered it feature complete. Currently, my focus is on fixing bugs I've found during usage and making the development experience better.
+Suggestions are welcome for adding additional features.
 
 ## Development Setup
 Note: steps 3 & 4 assume a developer is on some distribution of Debian/Ubuntu. If not on that distribution,
