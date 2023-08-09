@@ -149,7 +149,7 @@ I've built this out for my specific use case and released it to the public when 
 
 ## Development Setup
 Note: steps 3 & 4 assume a developer is on some distribution of Debian/Ubuntu. If not on that distribution,
-you can simply look at what is happening in `taskfile.dev` and replicate that in your environment.
+you can simply look at what is happening in `taskfile.yaml` and replicate that in your environment.
 
 1. Install [golang](https://go.dev/doc/install)  
 2. Install [taskfile.dev](https://taskfile.dev/installation/) on your machine. 
