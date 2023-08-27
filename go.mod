@@ -6,6 +6,7 @@ require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/faiface/beep v1.1.0
 	github.com/h2non/filetype v1.1.3
+	github.com/hcl/audioduration v0.0.0-20221028095105-c8039191ae43
 	github.com/jmillerv/go-utilities v0.0.0-20211009175413-077cd5304cea
 	github.com/mmcdole/gofeed v1.1.3
 	github.com/pkg/errors v0.9.1
