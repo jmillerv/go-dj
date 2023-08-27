@@ -109,32 +109,11 @@ func TestLocalFile_getEstimatedFileDuration(t *testing.T) {
 		t.Skipf("CI detected, skipping")
 	}
 	type fields struct {
-		Name             string
-		Content          *os.File
-		Path             string
+		File             *LocalFile
 		decodeReader     func(r io.Reader) (s beep.StreamSeekCloser, format beep.Format, err error)
 		decodeReadCloser func(rc io.ReadCloser) (s beep.StreamSeekCloser, format beep.Format, err error)
-		fileType         string
 	}
-	mp3File := &LocalFile{
-		Name:    "piano_six_seconds.mp3",
-		Path:    "../static/piano_six_seconds.mp3",
-		Content: nil,
-	}
-	wavFile := &LocalFile{
-		Name:    "CantinaBand3.wav",
-		Path:    "../static/CantinaBand3.wav",
-		Content: nil,
-	}
-	flacFile := &LocalFile{
-		Name:    "JosefSuk-Meditation.flac",
-		Path:    "../static/JosefSuk-Meditation.flac",
-		Content: nil,
-	}
-	oggFile := &LocalFile{
-		Name:    "",
-		Content: nil,
-	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -143,57 +122,65 @@ func TestLocalFile_getEstimatedFileDuration(t *testing.T) {
 		{
 			name: "wav file",
 			fields: fields{
-				Name:     wavFile.Name,
-				Content:  wavFile.Content,
-				Path:     wavFile.Path,
-				fileType: wavFile.fileType,
+				File: &LocalFile{
+					Name:     "CantinaBand3.wav",
+					Path:     "../static/CantinaBand3.wav",
+					fileType: wavFile,
+				},
 			},
-			want: "3",
+			want: "library doesn't support estimating wav files.",
 		},
 		{
 			name: "mp3 file",
 			fields: fields{
-				Name:     mp3File.Name,
-				Content:  mp3File.Content,
-				Path:     mp3File.Path,
-				fileType: mp3File.fileType,
+				File: &LocalFile{
+					Name:     "piano_six_seconds.mp3",
+					Path:     "../static/piano_six_seconds.mp3",
+					Content:  nil,
+					fileType: mp3File,
+				},
 			},
-			want: "",
+			want: "6.37",
 		},
 		{
 			name: "ogg file",
 			fields: fields{
-				Name:     oggFile.Name,
-				Content:  oggFile.Content,
-				Path:     oggFile.Path,
-				fileType: oggFile.fileType},
-			want: "",
+				File: &LocalFile{
+					Name:     "Example.ogg",
+					Path:     "../static/Example.ogg",
+					fileType: oggFile,
+				},
+			},
+			want: "6.10",
 		},
 		{
 			name: "FLAC file",
 			fields: fields{
-				Name:     flacFile.Name,
-				Content:  flacFile.Content,
-				Path:     flacFile.Path,
-				fileType: flacFile.fileType,
+				File: &LocalFile{
+					Name:     "JosefSuk-Meditation.flac",
+					Path:     "../static/JosefSuk-Meditation.flac",
+					Content:  nil,
+					fileType: flacFile,
+				},
 			},
-			want: "",
+			want: "405.45",
 		},
 		{
 			name: "default",
 			fields: fields{
-				fileType: "mp4",
+				File: &LocalFile{fileType: "mp4"},
 			},
-			want: "",
+			want: "unknown file type: can't determine duration",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			l := &LocalFile{
-				Name:    tt.fields.Name,
-				Content: tt.fields.Content,
-				Path:    tt.fields.Path,
+				Name:     tt.fields.File.Name,
+				Path:     tt.fields.File.Path,
+				fileType: tt.fields.File.fileType,
 			}
+
 			assert.Equalf(t, tt.want, l.getEstimatedFileDuration(), "getEstimatedFileDuration()")
 		})
 	}
