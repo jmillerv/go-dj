@@ -145,22 +145,11 @@ The `web_radio` file is able to take in a web radio address and play it through 
 streams don't work. 
 
 ## Feature Requests 
-I've built this out for my specific use case and released it to the public when I considered it feature complete. Currently, my focus is on fixing bugs I've found during usage and making the development experience better.
-Suggestions are welcome for adding additional features.
+
 
 ## Development Setup
-Note: steps 3 & 4 assume a developer is on some distribution of Debian/Ubuntu. If not on that distribution,
-you can simply look at what is happening in `taskfile.yaml` and replicate that in your environment.
 
-1. Install [golang](https://go.dev/doc/install)  
-2. Install [taskfile.dev](https://taskfile.dev/installation/) on your machine. 
-
-3. Run `task install_deps` in the root of this repo.
-
-4. Run `task run` in the root of this repo.
-
-If all passes without errors, you should be set to use this binary. Checkout the `taskfile.dev` for additional features 
-commands you can run.
+Follow the steps in [development.md](https://github.com/jmillerv/go-dj/blob/main/docs/development.md) to get started.
 
 ### Linting 
 Linting is performed by [golangci-lint](https://golangci-lint.run/)
