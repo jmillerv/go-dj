@@ -6,6 +6,7 @@ import (
 
 	"github.com/jmillerv/go-dj/cache"
 	"github.com/mmcdole/gofeed"
+	log "github.com/sirupsen/logrus"
 )
 
 type podcasts struct {
@@ -38,10 +39,16 @@ func (p *podcasts) getNewestEpisode() episode {
 	for i, ep := range p.Episodes {
 		// check for cacheData cache
 		cacheData, cacheHit := cache.PodcastPlayedCache.Get(defaultPodcastCache)
+		log.WithField("data", cacheData).WithField("hit", cacheHit).Info("cache data")
+
 		if cacheHit {
 			retrieved := (&podcastCacheData{}).fromCache(cacheData) //nolint:exhaustruct // need type casting
-			if contains(retrieved.Guids, ep.GUID) {
-				continue
+
+			// check for nil retrieved guids
+			if retrieved != nil {
+				if contains(retrieved.Guids, ep.GUID) {
+					continue
+				}
 			}
 		}
 
