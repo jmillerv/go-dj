@@ -119,11 +119,15 @@ func (p *Podcast) Play() error {
 
 		cacheData, cacheHit := cache.PodcastPlayedCache.Get(defaultPodcastCache)
 		if cacheHit {
-			podcastCache = cacheData.(podcastCacheData) //nolint:forcetypeassert // TODO: type checking
-		}
 
-		if p.EpisodeGUID != "" {
-			podcastCache.Guids = append(podcastCache.Guids, p.EpisodeGUID)
+			_, ok := cacheData.(podcastCacheData)
+			if ok {
+				podcastCache = cacheData.(podcastCacheData)
+
+				if p.EpisodeGUID != "" {
+					podcastCache.Guids = append(podcastCache.Guids, p.EpisodeGUID)
+				}
+			}
 		}
 
 		err := p.setCache(&podcastCache)

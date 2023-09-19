@@ -100,7 +100,15 @@ func main() { //nolint:funlen,cyclop // main function can be longer & more compl
 				UsageText: "deletes the in memory and locally saved podcast cache",
 				Action: func(c *cli.Context) {
 					log.Info("clearing cache")
-					scheduler, err := content.NewScheduler(configFile)
+
+					// set the config
+					var config string
+					if os.Getenv(configOverride) != "" {
+						config = os.Getenv(configOverride)
+					} else {
+						config = configFile
+					}
+					scheduler, err := content.NewScheduler(config)
 					if err != nil {
 						log.WithError(err).Error("content.NewScheduler::unable to create scheduler from config file")
 					}
@@ -111,8 +119,6 @@ func main() { //nolint:funlen,cyclop // main function can be longer & more compl
 					// create cache
 					cache.PodcastPlayedCache = zcache.New(ttl, ttl)
 
-					// hydrate podcast
-					content.HydratePodcastCache()
 					err = cache.ClearPodcastPlayedCache()
 					if err != nil {
 						log.WithError(err).Error("unable to clear podcast played cache")
