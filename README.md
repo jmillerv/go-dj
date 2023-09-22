@@ -3,6 +3,7 @@ daemon for automating audio programming
 
 ## Usage
 This code was developed for automating content for an AM radio station; however, it can be installed on any Linux device with an audio output.
+This isn't an ambitious tool, but an endeavor to get people interested in local first music solutions and possibly Part 15 of Title 47 CFR.
 
 For the first time setup, I'd recommend checking out this [doc](https://github.com/jmillerv/go-dj/blob/main/docs/first_time_setup.md)
 
