@@ -3,8 +3,15 @@
 These instructions come from getting this working on a fresh install of [DietPi](https://dietpi.com/) running on a [Raspberry Pi 3 B+]() There
 is an [existing issue](https://github.com/jmillerv/go-dj/issues/26) to automate this process for ease of use.
 
+## Prerequisites 
+Some knowledge of how to use the command line and the ability to use git/GitHub. 
+
+If you've never used GitHub before, this [Quick Start](https://docs.github.com/en/get-started/quickstart) guide will help. 
+
 
 ## Install Go
+Run the following commands in your terminal. 
+
 1. mkdir ~/tmp
 2. cd ~/tmp
 3. wget https://go.dev/dl/go1.19.4.src.tar.gz
@@ -15,8 +22,9 @@ is an [existing issue](https://github.com/jmillerv/go-dj/issues/26) to automate 
    returns  `go version go1.19.4 linux/arm64`
 
 ## Install dependencies
-These are the dependencies that I installed during the process of troubleshooting. I need to go through and confirm what is/is not needed.
+These are the dependencies that I installed during the process of troubleshooting. An audit of these dependencies is needed.
 
+Run the following in your terminal. 
 1. `sudo apt install libasound2 -y`
 2. `sudo apt install alsa-utils -y`
 3. `sudo apt-get install -y -qq libasound2-dev libssl-dev libpulse-dev libdbus-1-dev portaudio19-dev`
@@ -24,14 +32,18 @@ These are the dependencies that I installed during the process of troubleshootin
 5. `sudo apt install mpv` // this installs many of the previous packages, but I did this as step 5 when testing. 
 
 ## Clone Repo
+Run the following in your terminal. 
+
 1. `cd ~/`
 2. `mkdir dev`
 3. `git clone https://github.com/jmillerv/go-dj`
 
 ## Build
+Run the following in your terminal. 
+
 1. `cd ~/dev/go-dj`
 2. `go build`
-   3 chmod +x ./go-dj
+3. chmod +x ./go-dj
 
 ## Add a config
 1. cd ~/dev/go-dj
@@ -40,13 +52,15 @@ These are the dependencies that I installed during the process of troubleshootin
 
 ## Configure your timezone
 This will be different based on your OS and you may have done this during setup. I missed setting it to mine during the boot, so files weren't playing when I expected. 
+You can use the [System Configuration docs](https://dietpi.com/docs/dietpi_tools/system_configuration/) to aid you in getting to the DietPi timezone settings. 
 
 ## Configure audio outputs 
 DietPi doesn't have the soundcards installed by default, I had to do this to get sound out of the 3.5mm jack. go-dj outputs to
 wherever the default audio is sent to. 
 
 ### Test your speakers
-The following command will test the speakers without playing loud noise
+
+Run the following in the termnal. This command will test the speakers without playing loud noise. 
 `speaker-test -t wav -c 6` 
 
 To end the test press `ctrl+c`
