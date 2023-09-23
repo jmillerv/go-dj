@@ -27,7 +27,7 @@ func (w *WebRadio) Get() error {
 	// setup web radio stream
 	webRadioStream.playerName = streamPlayerName
 	webRadioStream.url = w.URL
-	webRadioStream.command = exec.Command(webRadioStream.playerName, "-quiet", "-playlist", webRadioStream.url)
+	webRadioStream.command = exec.Command(webRadioStream.playerName, "-quiet", webRadioStream.url)
 
 	webRadioStream.in, err = webRadioStream.command.StdinPipe()
 	if err != nil {
