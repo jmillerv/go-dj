@@ -114,15 +114,14 @@ func (p *Podcast) Get() error { //nolint:cyclop,funlen // complexity of 11, igno
 func (p *Podcast) Play() error {
 	log.Infof("streaming from %v ", p.URL)
 
-	if !p.Player.isPlaying {
+	if !p.Player.isPlaying { //nolint:nestif
 		log.WithField("episode", p.EpisodeGUID).Info("setting podcast played cache")
 
 		cacheData, cacheHit := cache.PodcastPlayedCache.Get(defaultPodcastCache)
 		if cacheHit {
-
 			_, ok := cacheData.(podcastCacheData)
 			if ok {
-				podcastCache = cacheData.(podcastCacheData)
+				podcastCache = cacheData.(podcastCacheData) //nolint:forcetypeassert
 
 				if p.EpisodeGUID != "" {
 					podcastCache.Guids = append(podcastCache.Guids, p.EpisodeGUID)
@@ -136,7 +135,6 @@ func (p *Podcast) Play() error {
 		}
 
 		err = p.Player.command.Start()
-
 		if err != nil {
 			return errors.Wrap(err, "podcast.Play::error starting podcast streamPlayer")
 		}
