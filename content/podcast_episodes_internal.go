@@ -39,9 +39,9 @@ func (p *podcasts) getNewestEpisode() episode {
 	for i, ep := range p.Episodes {
 		// check for cacheData cache
 		cacheData, cacheHit := cache.PodcastPlayedCache.Get(defaultPodcastCache)
-		log.WithField("data", cacheData).WithField("hit", cacheHit).Info("cache data")
 
 		if cacheHit {
+			log.WithField("data", cacheData).WithField("hit", cacheHit).Debug("cache data")
 			retrieved := (&podcastCacheData{}).fromCache(cacheData) //nolint:exhaustruct // need type casting
 
 			// check for nil retrieved guids
