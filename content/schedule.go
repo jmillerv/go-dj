@@ -45,16 +45,17 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 
 	// run operation in loop
 	for programIndex <= totalPrograms {
+		log.Infof("program index count %d", programIndex)
 		// check content from scheduler and run through it
 		// for loop that can be forced to continue from a go routine
 		for _, p := range s.Content.Programs {
 			now := time.Now()
 
-			log.Debugf("program %v", formatter.StructToIndentedString(p))
+			log.Infof("program %v", formatter.StructToIndentedString(p))
 
 			// if content is scheduled, retrieve and play
 			scheduled := p.Timeslot.IsScheduledNow(now)
-			if scheduled { //nolint:nestif // TODO: consider refactoring
+			if scheduled {
 				log.Infof("scheduler.Run::getting media type: %v", p.Type)
 
 				content := p.GetMedia()
@@ -76,39 +77,44 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 
 				// if p.getMediaType is webRadioContent or podcastContent start a timer and stop content from inside a go routine
 				// because these are streams rather than files they behave differently from local content.
-				//nolint:gocritic,godox,nolintlint // TODO: refactor as a switch case and remove the nolint directive
-				if p.getMediaType() == webRadioContent {
+				switch p.getMediaType() { //nolint:dupl,exhaustive // TODO consider refactoring into function
+				case webRadioContent:
+					log.Info("webradio content detected")
 					go func() {
 						duration := getDurationToEndTime(p.Timeslot.End) // might cause an index out of range issue
 						stopCountDown(content, duration, &wg)
 					}()
 
-					go func() {
-						log.Info("playing web radio inside of a go routine")
+					wg.Add(1)
 
-						wg.Add(1)
+					go func() {
+						defer wg.Done()
+						log.Info("playing web radio inside of a go routine")
 
 						err = content.Play()
 						if err != nil {
 							log.WithError(err).Error("Run::content.Play")
 						} // play will block until done
 					}()
-				} else if p.getMediaType() == podcastContent {
+				case podcastContent:
+					log.Info("podcast content detected")
 					go func() {
 						podcast := content.(*Podcast) //nolint:forcetypeassert // TODO: type checking
 						log.Infof("podcast player duration %s", podcast.Player.duration)
 						stopCountDown(content, podcast.Player.duration, &wg)
 					}()
 
+					wg.Add(1)
 					go func() {
+						defer wg.Done()
 						log.Info("playing podcast inside of a go routine")
-						wg.Add(1)
+
 						err = content.Play()
 						if err != nil {
 							log.WithError(err).Error("Run::content.Play")
 						} // play will block until done
 					}()
-				} else {
+				default:
 					err = content.Play() // play will block until done
 					if err != nil {
 						return err
@@ -117,7 +123,6 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 			}
 
 			log.Info("paused while go routines are running")
-
 			wg.Wait() // pause
 
 			if !p.Timeslot.IsScheduledNow(now) {
@@ -159,7 +164,11 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 }
 
 // Shuffle plays through the config content at random.
-func (s *Scheduler) Shuffle() error {
+func (s *Scheduler) Shuffle() error { //nolint:godox,funlen,gocognit,cyclop,nolintlint // TODO: consider refactoring
+	wg := new(sync.WaitGroup)
+
+	log.Info("Starting Daemon")
+
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(s.Content.Programs),
 		func(i, j int) {
@@ -173,28 +182,78 @@ func (s *Scheduler) Shuffle() error {
 
 	exitchnl := make(chan int)
 
-	for _, p := range s.Content.Programs {
-		log.Debugf("program %v", formatter.StructToIndentedString(p))
-		log.Infof("getting media type: %v", p.Type)
-		content := p.GetMedia()
-		log.Debugf("media struct: %v", content)
+	totalPrograms := len(s.Content.Programs)
+	programIndex := 0
 
-		err := content.Get()
-		if err != nil {
-			return err
+	// run operation in loop
+	for programIndex <= totalPrograms {
+		for _, p := range s.Content.Programs {
+			log.Debugf("program %v", formatter.StructToIndentedString(p))
+			log.Infof("getting media type: %v", p.Type)
+			content := p.GetMedia()
+			log.Debugf("media struct: %v", content)
+
+			err := content.Get()
+			if err != nil {
+				return err
+			}
+
+			// setup channel for os.Exit signal
+			go func() {
+				for {
+					stop := <-sigchnl
+					s.Stop(stop, content)
+				}
+			}()
+
+			// if p.getMediaType is webRadioContent or podcastContent start a timer and stop content from inside a go routine
+			// because these are streams rather than files they behave differently from local content.
+			//nolint:godox,nolintlint // TODO: consider refactoring switch into single function used in Run() & Shuffle()
+			switch p.getMediaType() { //nolint:dupl,exhaustive
+			case webRadioContent:
+				go func() {
+					duration := getDurationToEndTime(p.Timeslot.End) // might cause an index out of range issue
+					stopCountDown(content, duration, wg)
+				}()
+
+				wg.Add(1)
+				go func() {
+					defer wg.Done()
+					log.Info("playing web radio inside of a go routine")
+
+					err = content.Play()
+					if err != nil {
+						log.WithError(err).Error("Run::content.Play")
+					} // play will block until done
+				}()
+			case podcastContent:
+				go func() {
+					podcast := content.(*Podcast) //nolint:forcetypeassert // TODO: type checking
+					log.Infof("podcast player duration %s", podcast.Player.duration)
+					stopCountDown(content, podcast.Player.duration, wg)
+				}()
+
+				wg.Add(1)
+				go func() {
+					defer wg.Done()
+					log.Info("playing podcast inside of a go routine")
+					err = content.Play()
+					if err != nil {
+						log.WithError(err).Error("Run::content.Play")
+					} // play will block until done
+				}()
+			default:
+				err = content.Play() // play will block until done
+				if err != nil {
+					return err
+				}
+			}
+
+			log.Info("paused while go routines are running")
+			wg.Wait()      // pause
+			programIndex++ // increment index
 		}
 
-		go func() {
-			for {
-				stop := <-sigchnl
-				s.Stop(stop, content)
-			}
-		}()
-
-		err = content.Play()
-		if err != nil {
-			return err
-		} // play will block until done
 	}
 
 	exitcode := <-exitchnl
