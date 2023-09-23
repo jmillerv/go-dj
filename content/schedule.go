@@ -45,7 +45,6 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 
 	// run operation in loop
 	for programIndex <= totalPrograms {
-		log.Infof("program index count %d", programIndex)
 		// check content from scheduler and run through it
 		// for loop that can be forced to continue from a go routine
 		for _, p := range s.Content.Programs {
