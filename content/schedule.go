@@ -77,9 +77,10 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 
 				// if p.getMediaType is webRadioContent or podcastContent start a timer and stop content from inside a go routine
 				// because these are streams rather than files they behave differently from local content.
-				switch p.getMediaType() { //nolint:dupl,exhaustive // TODO consider refactoring into function
+				switch p.getMediaType() { //nolint:exhaustive // TODO consider refactoring into function
 				case webRadioContent:
 					log.Info("webradio content detected")
+
 					go func() {
 						duration := getDurationToEndTime(p.Timeslot.End) // might cause an index out of range issue
 						stopCountDown(content, duration, &wg)
@@ -98,6 +99,7 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 					}()
 				case podcastContent:
 					log.Info("podcast content detected")
+
 					go func() {
 						podcast := content.(*Podcast) //nolint:forcetypeassert // TODO: type checking
 						log.Infof("podcast player duration %s", podcast.Player.duration)
@@ -105,6 +107,7 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 					}()
 
 					wg.Add(1)
+
 					go func() {
 						defer wg.Done()
 						log.Info("playing podcast inside of a go routine")
@@ -217,6 +220,7 @@ func (s *Scheduler) Shuffle() error { //nolint:godox,funlen,gocognit,cyclop,noli
 				}()
 
 				wg.Add(1)
+
 				go func() {
 					defer wg.Done()
 					log.Info("playing web radio inside of a go routine")
@@ -234,9 +238,11 @@ func (s *Scheduler) Shuffle() error { //nolint:godox,funlen,gocognit,cyclop,noli
 				}()
 
 				wg.Add(1)
+
 				go func() {
 					defer wg.Done()
 					log.Info("playing podcast inside of a go routine")
+
 					err = content.Play()
 					if err != nil {
 						log.WithError(err).Error("Run::content.Play")
@@ -253,7 +259,6 @@ func (s *Scheduler) Shuffle() error { //nolint:godox,funlen,gocognit,cyclop,noli
 			wg.Wait()      // pause
 			programIndex++ // increment index
 		}
-
 	}
 
 	exitcode := <-exitchnl
