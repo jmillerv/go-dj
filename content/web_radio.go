@@ -6,6 +6,7 @@ package content
 
 import (
 	"os/exec"
+	"time"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -14,9 +15,10 @@ import (
 const streamPlayerName = "mpv"
 
 type WebRadio struct {
-	Name   string
-	URL    string
-	Player streamPlayer
+	Name     string
+	URL      string
+	Player   streamPlayer
+	Duration time.Duration // stream duration
 }
 
 var webRadioStream streamPlayer
@@ -58,13 +60,25 @@ func (w *WebRadio) Play() error {
 		w.Player.isPlaying = true
 		done := make(chan bool)
 
-		func() {
-			w.Player.pipeChan <- w.Player.out
-			done <- true
+		// begin a countdown using the duration passed in Scheduler.Run()
+		go func() {
+			log.Infof("time remaining: %v", w.Duration)
+			time.Sleep(w.Duration)
+			log.Info("stopping web radio")
+			err := w.Stop()
+			if err != nil {
+				log.WithError(err).Error("error stopping web radio")
+			}
+			close(done)
 		}()
-		<-done
-	}
 
+		go func() {
+			w.Player.pipeChan <- w.Player.out
+		}()
+		<-done // wait for done signal from the duration routine
+
+	}
+	log.Info("WebRadio.Play::returning nil")
 	return nil
 }
 
@@ -72,8 +86,8 @@ func (w *WebRadio) Stop() error {
 	log.Infof("webradio.Stop::Stopping stream from %v ", w.URL)
 
 	if w.Player.isPlaying {
+		log.Debug("WebRadio.Stop::setting isPlaying to false")
 		w.Player.isPlaying = false
-
 		_, err := w.Player.in.Write([]byte("q"))
 		if err != nil {
 			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Write()")
@@ -92,6 +106,6 @@ func (w *WebRadio) Stop() error {
 		w.Player.command = nil
 		w.Player.url = ""
 	}
-
+	log.Debug("WebRadio.Stop::returning nil")
 	return nil
 }
