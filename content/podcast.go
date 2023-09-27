@@ -38,6 +38,7 @@ type Podcast struct {
 	PlayOrder   PlayOrder
 	EpisodeGUID string
 	TTL         time.Duration // cache expiration time
+	Duration    time.Duration // podcast duration
 }
 
 type PlayOrder string
@@ -110,7 +111,8 @@ func (p *Podcast) Get() error { //nolint:cyclop,funlen // complexity of 11, igno
 	return nil
 }
 
-// Play sends the audio to the output. It caches a played episode in the cache ofr later checks.
+// Play sends the audio to the output. It caches a played episode in the cache for
+// later checks.
 func (p *Podcast) Play() error {
 	log.Infof("streaming from %v ", p.URL)
 
@@ -142,11 +144,22 @@ func (p *Podcast) Play() error {
 		p.Player.isPlaying = true
 		done := make(chan bool)
 
-		func() {
-			p.Player.pipeChan <- p.Player.out
-			done <- true
+		// begin a countdown using the duration passed in Scheduler.Run()
+		go func() {
+			log.Infof("time remaining: %v", p.Duration)
+			time.Sleep(p.Duration)
+			log.Info("stopping web radio")
+			err := p.Stop()
+			if err != nil {
+				log.WithError(err).Error("error stopping web radio")
+			}
+			close(done)
 		}()
-		<-done
+
+		go func() {
+			p.Player.pipeChan <- p.Player.out
+		}()
+		<-done // wait for done signal from duration routine
 	}
 
 	return nil
