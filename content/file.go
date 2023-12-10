@@ -9,8 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pkg/errors"
-
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/flac"
 	"github.com/faiface/beep/mp3"
@@ -19,6 +17,7 @@ import (
 	"github.com/faiface/beep/wav"
 	"github.com/h2non/filetype"
 	"github.com/hcl/audioduration"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -59,7 +58,7 @@ func (l *LocalFile) Play() error {
 
 	err := l.setDecoder()
 	if err != nil {
-		return errors.New(fmt.Sprintf("error setting decoder: %v", err)) //nolint:revive,gosimple // error pref
+		return errors.New(fmt.Sprintf("error setting decoder: %v", err)) //nolint:revive
 	}
 
 	_, err = l.Content.Seek(0, 0)
@@ -70,7 +69,7 @@ func (l *LocalFile) Play() error {
 	if l.fileType == wavFile || l.fileType == flacFile {
 		streamer, format, err = l.decodeReader(l.Content)
 		if err != nil {
-			return errors.New(fmt.Sprintf("unable to decode file: %v", err)) //nolint:revive,gosimple // error pref
+			return errors.New(fmt.Sprintf("unable to decode file: %v", err)) //nolint:revive
 		}
 	}
 

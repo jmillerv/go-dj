@@ -149,10 +149,12 @@ func (p *Podcast) Play() error {
 			log.Infof("time remaining: %v", p.Duration)
 			time.Sleep(p.Duration)
 			log.Info("stopping web radio")
-			err := p.Stop()
-			if err != nil {
-				log.WithError(err).Error("error stopping web radio")
+
+			podcastStopErr := p.Stop()
+			if podcastStopErr != nil {
+				log.WithError(podcastStopErr).Error("error stopping web radio")
 			}
+
 			close(done)
 		}()
 
