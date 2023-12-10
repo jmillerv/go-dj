@@ -28,6 +28,7 @@ jobs:
 
       - name: Test
         run: export CI=true && go test -v ./...
+
   test:
     runs-on: ubuntu-latest
     steps:
