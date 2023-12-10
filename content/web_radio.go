@@ -65,10 +65,12 @@ func (w *WebRadio) Play() error {
 			log.Infof("time remaining: %v", w.Duration)
 			time.Sleep(w.Duration)
 			log.Info("stopping web radio")
-			err := w.Stop()
-			if err != nil {
-				log.WithError(err).Error("error stopping web radio")
+
+			webRadioStopErr := w.Stop()
+			if webRadioStopErr != nil {
+				log.WithError(webRadioStopErr).Error("error stopping web radio")
 			}
+
 			close(done)
 		}()
 
@@ -76,9 +78,10 @@ func (w *WebRadio) Play() error {
 			w.Player.pipeChan <- w.Player.out
 		}()
 		<-done // wait for done signal from the duration routine
-
 	}
+
 	log.Info("WebRadio.Play::returning nil")
+
 	return nil
 }
 
@@ -87,7 +90,9 @@ func (w *WebRadio) Stop() error {
 
 	if w.Player.isPlaying {
 		log.Debug("WebRadio.Stop::setting isPlaying to false")
+
 		w.Player.isPlaying = false
+
 		_, err := w.Player.in.Write([]byte("q"))
 		if err != nil {
 			log.WithError(err).Error("error stopping web radio streamPlayerName: w.Player.in.Write()")
@@ -106,6 +111,8 @@ func (w *WebRadio) Stop() error {
 		w.Player.command = nil
 		w.Player.url = ""
 	}
+
 	log.Debug("WebRadio.Stop::returning nil")
+
 	return nil
 }

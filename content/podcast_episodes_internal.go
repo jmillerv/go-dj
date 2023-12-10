@@ -96,7 +96,7 @@ func (p *podcasts) getOldestEpisode() episode {
 func (p *podcasts) getRandomEpisode() episode {
 	var randomEpisode episode
 
-	rand.Seed(time.Now().UnixNano())
+	rand.New(rand.NewSource(time.Now().UnixNano())) //nolint:gosec // weak generator fine fo this purpose
 
 	item := p.Episodes[rand.Intn(len(p.Episodes))] //nolint:gosec // weak generator fine fo this purpose
 	_, cacheHit := cache.PodcastPlayedCache.Get(item.GUID)

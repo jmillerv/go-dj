@@ -1,7 +1,6 @@
 package content
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -18,6 +17,7 @@ import (
 	"github.com/faiface/beep/wav"
 	"github.com/h2non/filetype"
 	"github.com/hcl/audioduration"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -43,7 +43,7 @@ func (l *LocalFile) Get() error {
 
 	f, err := os.Open(l.Path)
 	if err != nil {
-		return errors.New(fmt.Sprintf("unable to open file from path: %v", err)) //nolint:lll,revive,gosimple,nolintlint // error pref
+		return errors.New(fmt.Sprintf("unable to open file from path %s", err.Error())) //nolint:lll,revive,gosimple,nolintlint // error pref
 	}
 
 	log.Infof("decoding file from %v", l.Path)
@@ -58,7 +58,7 @@ func (l *LocalFile) Play() error {
 
 	err := l.setDecoder()
 	if err != nil {
-		return errors.New(fmt.Sprintf("error setting decoder: %v", err)) //nolint:revive,gosimple // error pref
+		return errors.New(fmt.Sprintf("error setting decoder: %v", err)) //nolint:revive
 	}
 
 	_, err = l.Content.Seek(0, 0)
@@ -69,7 +69,7 @@ func (l *LocalFile) Play() error {
 	if l.fileType == wavFile || l.fileType == flacFile {
 		streamer, format, err = l.decodeReader(l.Content)
 		if err != nil {
-			return errors.New(fmt.Sprintf("unable to decode file: %v", err)) //nolint:revive,gosimple // error pref
+			return errors.New(fmt.Sprintf("unable to decode file: %v", err)) //nolint:revive
 		}
 	}
 

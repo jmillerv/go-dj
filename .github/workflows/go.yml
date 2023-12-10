@@ -19,7 +19,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.19
+          go-version: 1.21
           check-latest: true
           cache: true
 
@@ -28,6 +28,38 @@ jobs:
 
       - name: Test
         run: export CI=true && go test -v ./...
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - name: Apt update
+        run: sudo apt update --fix-missing
+
+      - name: Install dependencies
+        run: sudo apt install libasound2-dev libudev-dev pkg-config
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.21
+          check-latest: true
+          cache: true
+
+      - name: Run Tests
+        run: go test -coverprofile coverage.out
+
+      - name: Create Coverage Report
+        run: go tool cover -html coverage.out -o coverage.html
+
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: Unit Test Results
+          path: coverage.html
+
   # configuration: https://github.com/golangci/golangci-lint-action
   golangci:
     name: lint
@@ -36,7 +68,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
         with:
-          go-version: '1.20'
+          go-version: '1.21'
           cache: false
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
@@ -44,4 +76,4 @@ jobs:
           # Require: The version of golangci-lint to use.
           # When `install-mode` is `binary` (default) the value can be v1.2 or v1.2.3 or `latest` to use the latest version.
           # When `install-mode` is `goinstall` the value can be v1.2.3, `latest`, or the hash of a commit.
-          version: v1.53
+          version: v1.55.2

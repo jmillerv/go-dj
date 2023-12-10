@@ -25,7 +25,7 @@ func main() { //nolint:funlen,cyclop // main function can be longer & more compl
 		Usage:   "Daemon that schedules audio programming content",
 		Version: "0.0.1",
 		Commands: cli.Commands{
-			{
+			{ //nolint:exhaustruct
 				Name:      "start",
 				Aliases:   []string{"s"},
 				Usage:     "start",
@@ -93,7 +93,7 @@ func main() { //nolint:funlen,cyclop // main function can be longer & more compl
 					},
 				},
 			},
-			{
+			{ //nolint:exhaustruct
 				Name:      "clear-cache",
 				Aliases:   []string{"clear"},
 				Usage:     "./go-dj clear-cache",
