@@ -1,7 +1,6 @@
 package content
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -9,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/flac"
@@ -43,7 +44,7 @@ func (l *LocalFile) Get() error {
 
 	f, err := os.Open(l.Path)
 	if err != nil {
-		return errors.New(fmt.Sprintf("unable to open file from path: %v", err)) //nolint:lll,revive,gosimple,nolintlint // error pref
+		return errors.New(fmt.Sprintf("unable to open file from path %s", err.Error())) //nolint:lll,revive,gosimple,nolintlint // error pref
 	}
 
 	log.Infof("decoding file from %v", l.Path)

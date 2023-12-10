@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/faiface/beep"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,6 +16,7 @@ const (
 )
 
 func TestLocalFile_Get(t *testing.T) {
+	t.Parallel()
 	type fields struct {
 		Name             string
 		Content          *os.File
@@ -23,22 +25,86 @@ func TestLocalFile_Get(t *testing.T) {
 		decodeReadCloser func(rc io.ReadCloser) (s beep.StreamSeekCloser, format beep.Format, err error)
 		fileType         string
 	}
+	type want struct {
+		err error
+	}
 	tests := []struct {
 		name    string
 		fields  fields
+		prepare func(t *testing.T, f *fields) *LocalFile
 		wantErr bool
+		want    want
 	}{
-		//nolint:godox // TODO: Add test cases.
+		{
+			name: "Success: Open file without error",
+			fields: fields{
+				Name:             "localfile_test",
+				Path:             "./",
+				decodeReader:     nil,
+				decodeReadCloser: nil,
+				fileType:         ".txt",
+			},
+			prepare: func(t *testing.T, f *fields) *LocalFile {
+				t.Helper()
+				return &LocalFile{
+					Name:             f.Name,
+					Path:             f.Path,
+					decodeReader:     f.decodeReader,
+					decodeReadCloser: f.decodeReadCloser,
+					fileType:         f.fileType,
+				}
+			},
+			wantErr: false,
+		},
+		{
+			name: "Error: failed to open file",
+			fields: fields{
+				Name:             "adsadsada",
+				Path:             "32190da",
+				decodeReader:     nil,
+				decodeReadCloser: nil,
+				fileType:         ".txt",
+			},
+			prepare: func(t *testing.T, f *fields) *LocalFile {
+				t.Helper()
+				f.decodeReader = func(r io.Reader) (s beep.StreamSeekCloser, format beep.Format, err error) {
+					return nil, beep.Format{}, err
+				}
+				f.decodeReadCloser = func(rc io.ReadCloser) (s beep.StreamSeekCloser, format beep.Format, err error) {
+					return nil, beep.Format{}, err
+				}
+				return &LocalFile{
+					Name:             f.Name,
+					Path:             f.Path,
+					decodeReader:     f.decodeReader,
+					decodeReadCloser: f.decodeReadCloser,
+					fileType:         f.fileType,
+				}
+			},
+			wantErr: true,
+			want: want{
+				err: errors.New("unable to open file from path open 32190da: no such file or directory"),
+			},
+		},
 	}
 	for _, tt := range tests {
+		tt := tt // pin
 		t.Run(tt.name, func(t *testing.T) {
-			l := &LocalFile{
-				Name:    tt.fields.Name,
-				Content: tt.fields.Content,
-				Path:    tt.fields.Path,
+			t.Parallel()
+
+			// create temporary file
+			tmpFile, err := os.CreateTemp("", "localfile_test.txt")
+			if err != nil {
+				t.Fatalf("failed to create temporary file: %v", err)
 			}
-			if err := l.Get(); (err != nil) != tt.wantErr {
-				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+			defer os.Remove(tmpFile.Name())
+
+			getErr := tt.prepare(t, &tt.fields).Get()
+			if tt.wantErr {
+				if getErr == nil {
+					t.Fatalf("getErr shoold not be nil")
+				}
+				assert.EqualError(t, getErr, tt.want.err.Error())
 			}
 		})
 	}
