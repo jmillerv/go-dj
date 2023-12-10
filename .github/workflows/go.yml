@@ -28,6 +28,34 @@ jobs:
 
       - name: Test
         run: export CI=true && go test -v ./...
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - name: Apt update
+        run: sudo apt update --fix-missing
+
+      - name: Install dependencies
+        run: sudo apt install libasound2-dev libudev-dev pkg-config
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.21
+          check-latest: true
+          cache: true
+
+      - name: Run Tests
+        run: go test -v ./...
+
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: coverage.out
+
   # configuration: https://github.com/golangci/golangci-lint-action
   golangci:
     name: lint
