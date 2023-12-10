@@ -49,7 +49,9 @@ jobs:
           cache: true
 
       - name: Run Tests
-        run: go test -coverprofile coverage.out && go tool cover -html coverage.out -o coverage.html
+        run: | 
+          go test -coverprofile coverage.out 
+          go tool cover -html coverage.out -o coverage.html
 
       - name: Upload test coverage
         uses: actions/upload-artifact@v3
