@@ -49,13 +49,13 @@ jobs:
           cache: true
 
       - name: Run Tests
-        run: go test -json > TestResults.json
+        run: go test -coverprofile coverage.out && go tool cover -html coverage.out -o coverage.html
 
       - name: Upload test coverage
         uses: actions/upload-artifact@v3
         with:
           name: Unit Test Results
-          path: TestResults.json
+          path: coverage.html
 
   # configuration: https://github.com/golangci/golangci-lint-action
   golangci:
