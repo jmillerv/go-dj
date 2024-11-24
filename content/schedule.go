@@ -56,7 +56,7 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 
 			// if content is scheduled, retrieve and play
 			scheduled := p.Timeslot.IsScheduledNow(now)
-			if scheduled {
+			if scheduled { //nolint:nestif // consider refactoring
 				log.Infof("scheduler.Run::getting media type: %v", p.Type)
 
 				content := p.GetMedia()
@@ -78,7 +78,7 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 
 				// if p.getMediaType is webRadioContent or podcastContent start a timer and stop content from inside a go routine
 				// because these are streams rather than files they behave differently from local content.
-				switch p.getMediaType() { //nolint:exhaustive // TODO consider refactoring into function
+				switch p.getMediaType() { //nolint:exhaustive,dupl // TODO consider refactoring into function
 				case webRadioContent:
 					log.Info("web radio content detected")
 
@@ -91,6 +91,7 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 					go func() {
 						defer wg.Done()
 						log.Info("Run::playing web radio inside of a go routine")
+
 						err := content.Play()
 						if err != nil {
 							log.WithError(err).Error("Run::content.Play")
@@ -105,12 +106,12 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 					// If the StrictPodcastSchedule is set to false, use the duration of the podcast to set the countdown.
 					if !s.Content.StrictPodcastSchedule {
 						podcast.Duration = podcast.Player.duration
-
 					} else {
 						podcast.Duration = getDurationToEndTime(p.Timeslot.End)
 					}
 
 					wg.Add(1)
+
 					go func() {
 						defer wg.Done()
 						log.Info("playing podcast inside of a go routine")
@@ -120,6 +121,7 @@ func (s *Scheduler) Run() error { //nolint:godox,funlen,gocognit,cyclop,nolintli
 							log.WithError(err).Error("Run::content.Play")
 						} // play will block until done
 					}()
+
 				default:
 					err = content.Play() // play will block until done
 					if err != nil {
@@ -175,7 +177,6 @@ func (s *Scheduler) Shuffle() error { //nolint:godox,funlen,gocognit,cyclop,noli
 
 	log.Info("Starting Daemon")
 
-	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(s.Content.Programs),
 		func(i, j int) {
 			s.Content.Programs[i], s.Content.Programs[j] = s.Content.Programs[j], s.Content.Programs[i]
@@ -228,6 +229,7 @@ func (s *Scheduler) Shuffle() error { //nolint:godox,funlen,gocognit,cyclop,noli
 				go func() {
 					defer wg.Done()
 					log.Info("Run::playing web radio inside of a go routine")
+
 					err := content.Play()
 					if err != nil {
 						log.WithError(err).Error("Run::content.Play")
@@ -241,12 +243,12 @@ func (s *Scheduler) Shuffle() error { //nolint:godox,funlen,gocognit,cyclop,noli
 				// If the StrictPodcastSchedule is set to false, use the duration of the podcast to set the countdown.
 				if !s.Content.StrictPodcastSchedule {
 					podcast.Duration = podcast.Player.duration
-
 				} else {
 					podcast.Duration = getDurationToEndTime(p.Timeslot.End)
 				}
 
 				wg.Add(1)
+
 				go func() {
 					defer wg.Done()
 					log.Info("playing podcast inside of a go routine")
@@ -264,7 +266,9 @@ func (s *Scheduler) Shuffle() error { //nolint:godox,funlen,gocognit,cyclop,noli
 			}
 
 			log.Info("paused while go routines are running")
-			wg.Wait()      // pause
+
+			wg.Wait() // pause
+
 			programIndex++ // increment index
 		}
 	}

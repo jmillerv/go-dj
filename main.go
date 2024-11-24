@@ -1,9 +1,12 @@
 package main
 
+//nolint:gci
 import (
 	"io"
 	"os"
 	"time"
+
+	"github.com/jmillerv/go-dj/helpers"
 
 	"github.com/jmillerv/go-dj/cache"
 	"github.com/jmillerv/go-dj/content"
@@ -16,21 +19,21 @@ const (
 	configFile     = "config.yml"
 	configOverride = "GODJ_CONFIG_OVERRIDE"
 	logFile        = "/tmp/godj.log"
-	logPermissions = 0666 //nolint:gofumpt // gofumpt does weird things to this
+	logPermissions = 0o666
 )
 
-func main() { //nolint:funlen,cyclop // main function can be longer & more complex.
+func main() { //nolint:funlen,cyclop,gocognit // main function can be longer & more complex.
 	app := &cli.App{ //nolint:exhaustivestruct,exhaustruct
 		Name:    "Go DJ",
 		Usage:   "Daemon that schedules audio programming content",
 		Version: "0.0.1",
 		Commands: cli.Commands{
-			{
+			{ //nolint:exhaustruct
 				Name:      "start",
 				Aliases:   []string{"s"},
 				Usage:     "start",
 				UsageText: "starts the daemon from the config",
-				Action: func(c *cli.Context) {
+				Action: func(c *cli.Context) { //nolint:revive
 					var config string
 					log.Info("creating schedule from config")
 					if os.Getenv(configOverride) != "" {
@@ -93,12 +96,12 @@ func main() { //nolint:funlen,cyclop // main function can be longer & more compl
 					},
 				},
 			},
-			{
+			{ //nolint:exhaustruct
 				Name:      "clear-cache",
 				Aliases:   []string{"clear"},
 				Usage:     "./go-dj clear-cache",
 				UsageText: "deletes the in memory and locally saved podcast cache",
-				Action: func(c *cli.Context) {
+				Action: func(c *cli.Context) { //nolint:revive
 					log.Info("clearing cache")
 
 					// set the config
@@ -122,6 +125,42 @@ func main() { //nolint:funlen,cyclop // main function can be longer & more compl
 					err = cache.ClearPodcastPlayedCache()
 					if err != nil {
 						log.WithError(err).Error("unable to clear podcast played cache")
+					}
+				},
+			},
+			{ //nolint:exhaustruct
+				Name:      "install-dependencies",
+				Aliases:   []string{"deps"},
+				Usage:     "./go-dj install-dependencies",
+				UsageText: "installs necessary dependencies to run go-dj",
+				Action: func(c *cli.Context) { //nolint:revive
+					packages := []string{"libasound2-dev", "libudev-dev", "pkg-config"}
+					missingPackages := []string{}
+
+					for _, pkg := range packages {
+						if !helpers.PackageIsInstalled(pkg) {
+							missingPackages = append(missingPackages, pkg)
+						}
+					}
+
+					if len(missingPackages) > 0 {
+						log.Info("The following packages are missing:")
+						for _, pkg := range missingPackages {
+							log.Info("-", pkg)
+						}
+
+						log.Info("Installing missing packages...")
+						for _, pkg := range missingPackages {
+							err := helpers.InstallPackage(pkg)
+							if err != nil {
+								log.WithError(err).Error("Error installing package:")
+
+								return
+							}
+							log.Infof("Package %s installed successfully.\n", pkg)
+						}
+					} else {
+						log.Info("All required packages are already installed.")
 					}
 				},
 			},
