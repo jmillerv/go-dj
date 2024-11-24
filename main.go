@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"github.com/jmillerv/go-dj/helpers"
 	"io"
 	"os"
 	"time"
@@ -123,6 +125,45 @@ func main() { //nolint:funlen,cyclop // main function can be longer & more compl
 					if err != nil {
 						log.WithError(err).Error("unable to clear podcast played cache")
 					}
+				},
+			},
+			{
+				Name:      "install-dependencies",
+				Aliases:   []string{"deps"},
+				Usage:     "./go-dj install-dependencies",
+				UsageText: "installs necessary dependencies to run go-dj",
+				Action: func(c *cli.Context) {
+
+					packages := []string{"libasound2-dev", "libudev-dev", "pkg-config"}
+					missingPackages := []string{}
+
+					for _, pkg := range packages {
+						if !helpers.PackageIsInstalled(pkg) {
+							missingPackages = append(missingPackages, pkg)
+						}
+					}
+
+					if len(missingPackages) > 0 {
+						log.Info("The following packages are missing:")
+						for _, pkg := range missingPackages {
+							fmt.Println("-", pkg)
+						}
+
+						fmt.Println("Installing missing packages...")
+						for _, pkg := range missingPackages {
+							err := helpers.InstallPackage(pkg)
+							if err != nil {
+								log.WithError(err).Error("Error installing package:")
+								return
+							} else {
+								log.Infof("Package %s installed successfully.\n", pkg)
+							}
+						}
+
+					} else {
+						log.Info("All required packages are already installed.")
+					}
+
 				},
 			},
 		},
