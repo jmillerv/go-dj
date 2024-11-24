@@ -22,7 +22,7 @@ const (
 	podcastCacheLocalFile                = "./cache/podcastCache.json"
 	localFileTTY                         = "72h"
 	defaultPodcastPlayDuration           = "1h"
-	cachePermissions                     = 0644 //nolint:gofumpt // gofumpt does weird things
+	cachePermissions                     = 0o644
 )
 
 var (
@@ -44,7 +44,7 @@ type Podcast struct {
 type PlayOrder string
 
 // Get parses a podcast feed and sets the most recent episode as the Podcast content.
-func (p *Podcast) Get() error { //nolint:cyclop,funlen // complexity of 11, ignore for now.
+func (p *Podcast) Get() error {
 	var ep episode
 
 	parser := gofeed.NewParser()
@@ -98,11 +98,7 @@ func (p *Podcast) Get() error { //nolint:cyclop,funlen // complexity of 11, igno
 		log.Infof("podcast lacks duration, setting default duration")
 
 		podcastStream.setDuration(defaultPodcastPlayDuration)
-		if err != nil {
-			return errors.Wrap(err, "error parsing duration")
-		}
 	}
-
 	// set isPlaying to false
 	podcastStream.isPlaying = false
 
@@ -149,10 +145,12 @@ func (p *Podcast) Play() error {
 			log.Infof("time remaining: %v", p.Duration)
 			time.Sleep(p.Duration)
 			log.Info("stopping web radio")
+
 			err := p.Stop()
 			if err != nil {
 				log.WithError(err).Error("error stopping web radio")
 			}
+
 			close(done)
 		}()
 
